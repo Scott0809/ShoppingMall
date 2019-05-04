@@ -1,13 +1,15 @@
-package shoppingmall.bobo.com.shoppingmall;
+package com.bobo.shoppingmall.app;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import com.bobo.shoppingmall.R;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_welcome);
+        setContentView(R.layout.activity_main);
     }
 }
