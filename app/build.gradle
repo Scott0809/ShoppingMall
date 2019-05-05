@@ -2,7 +2,9 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
+        android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
         applicationId "com.bobo.shoppingmall"
         minSdkVersion 15
         targetSdkVersion 28
@@ -16,6 +18,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Butterknife requires Java 8.
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
+
+    //:app:transformResourcesWithMergeJavaResForDebug'. > More than one file was f……
+//    packagingOptions {
+//        exclude 'META-INF/androidx.core_core'
+//    }
 }
 
 dependencies {
@@ -25,4 +38,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //ButterKnife
+    implementation 'com.jakewharton:butterknife:7.0.1'
+
+    //试用了ButterKnife10.1.0 可能用的太早吧 感觉国外的公司还没有国内靠谱 建议使用成熟版本
+    //细数ButterKnife10.1.0 的bug： https://blog.csdn.net/smile_Running/article/details/88090752
+    //implementation ('com.jakewharton:butterknife:10.1.0')
+    //annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
 }
