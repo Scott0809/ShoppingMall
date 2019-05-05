@@ -5,6 +5,9 @@
 <div align="center">
 <img src="https://github.com/leonInShanghai/ShoppingMall/blob/master/app/src/main/res/drawable-hdpi-v4/atguigu_logo.png" >
  </div></br>
-使用 ButterKnife框架 初始化布局 ButterKnife是目前常用的一种依托Java注解机制实现辅助代码生成的框架,用到了注解处理器。 它是一个专注于Android系统的View注入框架。 将Android视图和回调方法绑定到成员变量和方法上，可视化一键生成。 可以减少大量的findViewById以及setOnClickListener代码,是注解中相对简单易懂的开源框架。
+使用 ButterKnife框架 初始化布局 ButterKnife是目前常用的一种依托Java注解机制实现辅助代码生成的框架,用到了注解处理器。
+ 它是一个专注于Android系统的View注入框架。 将Android视图和回调方法绑定到成员变量和方法上，可视化一键生成。 可以减少
+ 大量的findViewById以及setOnClickListener代码,是注解中相对简单易懂的开源框架。
+
 
 
