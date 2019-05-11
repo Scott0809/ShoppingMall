@@ -1,13 +1,24 @@
 package com.bobo.shoppingmall.app;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.Utils.UtilsStyle;
+import com.bobo.shoppingmall.base.BaseFragment;
+import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
+import com.bobo.shoppingmall.home.fragment.HomeFragmnet;
+import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet;
+import com.bobo.shoppingmall.type.fragment.TypeFragmnet;
+import com.bobo.shoppingmall.user.fragment.UserFragmnet;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -35,34 +46,105 @@ public class MainActivity extends FragmentActivity {
     @Bind(R.id.rg_main)
     RadioGroup rgMain;
 
+    /**存储各个fragment 的集合*/
+    private ArrayList<BaseFragment> fragments;
+
+    //用户选择RadioGroup 上按钮位置
+    private int position = 0;
+
+    //缓存的fragmnet或者上次显示的fragment
+    private Fragment tempFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //设置状态栏上的字体为黑色-因为本页面是白色必须设置
+        UtilsStyle.statusBarLightMode(this);
 
         //ButterKnife和当前activity绑定
         ButterKnife.bind(this);
 
-       rgMain.check(R.id.rb_home);
-
+        //初始化各个fragment
+        initFragment();
     }
 
 
     @OnClick({R.id.rb_home, R.id.rb_type, R.id.rb_community, R.id.rb_cart, R.id.rb_user, R.id.rg_main})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.rb_home:
+            case R.id.rb_home://主页
+                position = 0;
                 break;
-            case R.id.rb_type:
+            case R.id.rb_type://分类
+                position = 1;
                 break;
-            case R.id.rb_community:
+            case R.id.rb_community://发现
+                position = 2;
                 break;
-            case R.id.rb_cart:
+            case R.id.rb_cart://购物车
+                position = 3;
                 break;
-            case R.id.rb_user:
+            case R.id.rb_user://用户中心
+                position = 4;
                 break;
-            case R.id.rg_main:
+            default://默认主页
+                position = 0;
                 break;
+        }
+
+        //根据位置去取不同的fragment
+        BaseFragment baseFragment = getFragment(position);
+        //切换fragment的方法
+        switchFragment(tempFragment,baseFragment);
+    }
+
+    //初始化各个fragment
+    private void initFragment(){
+        fragments = new ArrayList<>();
+        fragments.add(new HomeFragmnet());
+        fragments.add(new TypeFragmnet());
+        fragments.add(new CommunityFragmnet());
+        fragments.add(new ShoppingCartFragmnet());
+        fragments.add(new UserFragmnet());
+        //默认选择首页
+        rbHome.performClick();
+        //rgMain.check(R.id.rb_home);
+    }
+
+    private BaseFragment getFragment(int position){
+        if (fragments != null && fragments.size() > position){
+            BaseFragment baseFragment = fragments.get(position);
+            return baseFragment;
+        }
+        return null;
+    }
+
+    /**
+     * 切换Fragmengt的方法
+     * @param fromFragment 第一个参数：上次显示的fragment
+     * @param nextFragment 第二个参数：当前正要显示的fragment
+     */
+    private void switchFragment(Fragment fromFragment,BaseFragment nextFragment){
+        if (tempFragment != nextFragment){
+            tempFragment = nextFragment;
+            if (nextFragment != null){
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                //判断nextFragmmnet是否添加
+                if (!nextFragment.isAdded()){//如果没有添加过添加
+                    if (fromFragment != null){
+                        transaction.hide(fromFragment);
+                    }
+                    //添加Fragment
+                    transaction.add(R.id.frameLayout,nextFragment).commit();
+                }else {//如果添加过直接show
+                    //隐藏当前Fragment
+                    if (fromFragment != null) {
+                        transaction.hide(fromFragment);
+                    }
+                    transaction.show(nextFragment).commit();
+                }
+            }
         }
     }
 }

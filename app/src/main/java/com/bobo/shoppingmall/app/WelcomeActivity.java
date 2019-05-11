@@ -1,23 +1,25 @@
-package com.bobo.shoppingmall;
+package com.bobo.shoppingmall.app;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.bobo.shoppingmall.R;
-import com.bobo.shoppingmall.app.MainActivity;
+import com.bobo.shoppingmall.Utils.UtilsStyle;
 
 /**
  * Created by 求知自学网 on 2019/5/4 Copyright © Leon. All rights reserved.
- * Functions: 商城app的起始页
+ * Functions: 商城app的起始页  42考场 - 3号 - 713 上午8：00
  */
 public class WelcomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_welcome);
+        //设置状态栏上的字体为黑色-因为本页面是白色必须设置
+        UtilsStyle.statusBarLightMode(this);
 
         //2秒中进入主页面
         new Handler().postDelayed(new Runnable() {
@@ -31,5 +33,6 @@ public class WelcomeActivity extends Activity {
                 finish();
             }
         },2000);
+
     }
 }

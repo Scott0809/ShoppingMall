@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '28.0.3'
     defaultConfig {
         android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
         applicationId "com.bobo.shoppingmall"
@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
@@ -47,4 +47,20 @@ dependencies {
     //implementation ('com.jakewharton:butterknife:10.1.0')
     //annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
+    //RecyclerView 导入依赖有两种方法
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+    //对okhttp3进行封装的开源框架(停止维护不能用作Https请求)
+    // https://github.com/hongyangAndroid/okhttputils
+    //implementation'com.zhy:okhttputils:2.6.2'
+
+//    implementation('com.zhy:okhttputils:2.6.2') {
+//        /**
+//         * 解决Expected ':status' header not present
+//         * Leon先排除了okhttputils中的okhttp 又自己手动导入 okhttp-3.9.0.jar
+//         * https://www.cnblogs.com/xiangxinhouse/p/9065205.html
+//         */
+//        exclude module: 'okhttp'
+//    }
+    implementation files('libs/okhttp-3.9.0.jar')
 }

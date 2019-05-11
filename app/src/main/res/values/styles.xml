@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme.系统自带的 已经不用 不能预览 -->
     <style name="AppTheme1" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -11,8 +11,16 @@
     <!--解决： Failed to load AppCompat ActionBar with unknown error-->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <!-- 隐藏标题栏 -->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!-- 窗口透明的状态栏 其实是半透明-->
+        <!--<item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>-->
+        <!--<item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>-->
+        <!-- 窗口透明的导航栏 没有用到-->
+        <!--<item name="android:windowTranslucentNavigation" tools:ignore="NewApi">true</item>-->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--原来 @color/colorPrimaryDark 通过这样设置为达到透明效果-->
+        <item name="colorPrimaryDark">#00000000</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
