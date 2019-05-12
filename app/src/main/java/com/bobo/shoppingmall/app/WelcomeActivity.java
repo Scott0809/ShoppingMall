@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
 import com.bobo.shoppingmall.R;
-import com.bobo.shoppingmall.Utils.UtilsStyle;
+import com.bobo.shoppingmall.utils.UtilsStyle;
 
 /**
  * Created by 求知自学网 on 2019/5/4 Copyright © Leon. All rights reserved.

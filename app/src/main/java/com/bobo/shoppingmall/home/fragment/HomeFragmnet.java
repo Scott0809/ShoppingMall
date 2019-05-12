@@ -1,5 +1,6 @@
 package com.bobo.shoppingmall.home.fragment;
 
+import android.drm.ProcessedData;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,17 +13,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bobo.shoppingmall.HttpsUtils.OkHttpUtils;
-import com.bobo.shoppingmall.HttpsUtils.callback.StringCallback;
+import com.alibaba.fastjson.JSON;
+import com.bobo.shoppingmall.home.adapter.HomeFragmentAdapter;
+import com.bobo.shoppingmall.home.bean.ResultBeanData;
+import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
+import com.bobo.shoppingmall.httpsUtils.callback.StringCallback;
 import com.bobo.shoppingmall.R;
-import com.bobo.shoppingmall.Utils.LELog;
+import com.bobo.shoppingmall.utils.Constants;
+import com.bobo.shoppingmall.utils.LELog;
 import com.bobo.shoppingmall.base.BaseFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.Call;
-import okhttp3.Request;
 
 /**
  * Created by 求知自学网 on 2019/5/11. Copyright © Leon. All rights reserved.
@@ -38,12 +42,16 @@ public class HomeFragmnet extends BaseFragment {
     RecyclerView rvHome;
     @Bind(R.id.ib_top)
     ImageButton ibTop;
-    private TextView textView;
+
+    private HomeFragmentAdapter adapter;
+
+    /**首页数据对象*/
+    private ResultBeanData.ResultBean resultBean;
 
     @Override
     public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                          @Nullable Bundle savedInstanceState) {
-        Log.e("TAG", "主页民fragment的UI被初始化了");
+        Log.e("TAG", "主页面fragment的UI被初始化了");
         View view = View.inflate(mContext, R.layout.fragment_home, null);
 
 
@@ -54,9 +62,14 @@ public class HomeFragmnet extends BaseFragment {
     public void initData() {
         super.initData();
 
+        //网络请求
+        getDataFromNet();
+    }
+
+    private void getDataFromNet() {
 
         //联网请求 老弟商城项目url：https://geekpark.site/atguigu/json/WENJU_STORE.json
-        String url = "https://geekpark.site/atguigu/json/WENJU_STORE.json";
+        String url = Constants.HOME_URL;
         OkHttpUtils.get().url(url).build().execute(new StringCallback() {
 
                     /**
@@ -68,7 +81,7 @@ public class HomeFragmnet extends BaseFragment {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Toast.makeText(getContext(),"请求失败请检查网络",Toast.LENGTH_SHORT).show();
-                        LELog.showLogWithLineNum(5,e.getMessage());
+                        //LELog.showLogWithLineNum(5,e.getMessage());
                     }
 
                     /**
@@ -78,14 +91,36 @@ public class HomeFragmnet extends BaseFragment {
                      */
                     @Override
                     public void onResponse(String response, int id) {
-                        LELog.showLogWithLineNum(5,"请求成功"+response);
+                        //LELog.showLogWithLineNum(5,"请求成功"+response);
+                        //解析数据
+                        processedData(response);
                     }
                 });
     }
 
+    //使用阿里开源的框架法fastjson解析数据
+    private void processedData(String json) {
+
+        //解析数据 注意gsonfromt 生成的是fastjson数据
+        ResultBeanData resultBeanData = JSON.parseObject(json,ResultBeanData.class);
+
+        //首页数据模型对象
+        resultBean = resultBeanData.getResult();
+
+        if (resultBean != null){//有数据
+            //设置适配器
+            adapter = new HomeFragmentAdapter(mContext,resultBeanData);
+            rvHome.setAdapter(adapter);
+        }else{//没有数据
+
+        }
+
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
+
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;

@@ -10,7 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
-import com.bobo.shoppingmall.Utils.UtilsStyle;
+import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
 import com.bobo.shoppingmall.home.fragment.HomeFragmnet;

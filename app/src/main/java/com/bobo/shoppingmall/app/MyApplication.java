@@ -3,7 +3,7 @@ package com.bobo.shoppingmall.app;
 import android.app.Application;
 
 
-import com.bobo.shoppingmall.HttpsUtils.OkHttpUtils;
+import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
 

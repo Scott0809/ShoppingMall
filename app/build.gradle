@@ -47,20 +47,19 @@ dependencies {
     //implementation ('com.jakewharton:butterknife:10.1.0')
     //annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
-    //RecyclerView 导入依赖有两种方法
+    //RecyclerView 导入依赖有两种方法 https://www.jianshu.com/p/0a4c93b3e71c
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 
     //对okhttp3进行封装的开源框架(停止维护不能用作Https请求)
-    // https://github.com/hongyangAndroid/okhttputils
+    // https://github.com/hongyangAndroid/okhttputils httpsutils包中重写了
     //implementation'com.zhy:okhttputils:2.6.2'
 
+    //阿里巴巴开源框架fastjson
+    implementation 'com.alibaba:fastjson:1.1.71.android'
+
 //    implementation('com.zhy:okhttputils:2.6.2') {
-//        /**
-//         * 解决Expected ':status' header not present
-//         * Leon先排除了okhttputils中的okhttp 又自己手动导入 okhttp-3.9.0.jar
-//         * https://www.cnblogs.com/xiangxinhouse/p/9065205.html
-//         */
 //        exclude module: 'okhttp'
 //    }
+
     implementation files('libs/okhttp-3.9.0.jar')
 }
