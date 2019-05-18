@@ -4,6 +4,7 @@ import android.drm.ProcessedData;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,8 +110,12 @@ public class HomeFragmnet extends BaseFragment {
 
         if (resultBean != null){//有数据
             //设置适配器
-            adapter = new HomeFragmentAdapter(mContext,resultBeanData);
+            adapter = new HomeFragmentAdapter(mContext,resultBean);
             rvHome.setAdapter(adapter);
+
+            //设置布局管理者 注意RecyclerView 要设置
+            rvHome.setLayoutManager(new GridLayoutManager(mContext,1));
+
         }else{//没有数据
 
         }

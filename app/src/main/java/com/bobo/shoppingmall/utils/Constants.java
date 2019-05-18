@@ -6,7 +6,14 @@ package com.bobo.shoppingmall.utils;
  */
 public class Constants {
 
-    //主页面的路径
-    public static final String HOME_URL = "https://geekpark.site/atguigu/json/HOME_URL.json";
+    /**网络请求的根目录*/
+    public static final String BASE_URL = "https://geekpark.site/atguigu";
+
+    /**主页面的路径*/
+    public static final String HOME_URL =  BASE_URL+"/json/HOME_URL.json";
+
+    /**图片的基本路径*/
+    public static final String BASE_URL_IMAGE =  BASE_URL+"/img";
+
 
 }

@@ -1,13 +1,31 @@
 package com.bobo.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import com.bobo.shoppingmall.R;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
+import com.bobo.shoppingmall.utils.DensityUtil;
+import com.bumptech.glide.Glide;
+import com.youth.banner.Banner;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.bobo.shoppingmall.utils.Constants.BASE_URL_IMAGE;
 
 /**
  * Created by 求知自学网 on 2019/5/12. Copyright © Leon. All rights reserved.
@@ -38,13 +56,14 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     //数据对象
-    private ResultBeanData mResultBeanData;
+    private ResultBeanData.ResultBean resultBean;
+
     //用LayoutInflater初始化布局 和 View.inflate()类似
     private LayoutInflater mLayoutInflater;
 
-    public HomeFragmentAdapter(Context context, ResultBeanData resultBeanData) {
+    public HomeFragmentAdapter(Context context, ResultBeanData.ResultBean resultBean) {
         this.mContext = context;
-        this.mResultBeanData = resultBeanData;
+        this.resultBean = resultBean;
         this.mLayoutInflater = LayoutInflater.from(mContext);
     }
 
@@ -52,23 +71,125 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
      * 相当于BaseAdapter的getView方法 创建ViewHolder部分代码
      * 创建viewHolder
      * @param viewGroup
-     * @param i 当前的类型
+     * @param viewType 当前的类型
      * @return
      */
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        if (viewType == BANNER){//创建处理banner类型 ViewHolder
+            return new BannerViewHolder(mContext,mLayoutInflater.inflate(R.layout.banner_viewpager,
+                    null));
+        }else if (viewType == CHANNEL){//创建频道类型ViewHolder
+            return new ChannelViewHolder(mContext,mLayoutInflater.inflate(R.layout.channel_item,
+                    null));
+        }
         return null;
     }
 
     /**
      * 相当于BaseAdapter的getView方法中的绑定数据模块
      * @param viewHolder
-     * @param i
+     * @param position
      */
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+            if (getItemViewType(position) == BANNER){
+                BannerViewHolder bannerViewHolder = (BannerViewHolder)viewHolder;
+                //开始设置数据
+                bannerViewHolder.setData(resultBean.getBanner_info());
+            }else if (getItemViewType(position) == CHANNEL){
+                ChannelViewHolder channelViewHolder = (ChannelViewHolder)viewHolder;
+                //开始设置数据
+                channelViewHolder.setData(resultBean.getChannel_info());
+            }
+    }
 
+    //频道类型的viewholder 注意要继承RecyclerView.ViewHolder
+    class ChannelViewHolder extends RecyclerView.ViewHolder{
+
+        private Context mContext;
+        private GridView gv_channel;
+        private ChannelAdapter channelAdapter;
+
+        public ChannelViewHolder(Context context, View itemView) {
+            super(itemView);
+            this.mContext = context;
+            this.gv_channel = (GridView)itemView.findViewById(R.id.gv_channel);
+
+            //设置本item中的GridView 的item的点击事件
+            gv_channel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext,"点击了频道的"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.ChannelInfoBean> channel_info) {
+            //得到数据了要去设置GridView 的适配器 - 创建适配器
+            channelAdapter = new ChannelAdapter(mContext,channel_info);
+
+            //设置适配器
+            gv_channel.setAdapter(channelAdapter);
+        }
+    }
+
+    //Banner类型的 ViewHolder 注意要继承RecyclerView.ViewHolder
+    class BannerViewHolder extends RecyclerView.ViewHolder{
+
+        private Context mContext;
+        private Banner banner;
+
+
+        public BannerViewHolder(Context context, View itemView) {
+           super(itemView);
+           this.mContext = context;
+           //网络上请求的图片宽高比为 690 ： 300
+           this.banner = (Banner) itemView.findViewById(R.id.banner);
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.BannerInfoBean> banner_info) {
+
+            //动态设置banner的最佳高度 使得图片不会被拉伸变形
+            //Math.round 函数返回一个数字四舍五入后最接近的整数
+            int viewHeight = Math.round(getScreenWidth() * 300 / 690);
+            //int dip =  DensityUtil.px2dip(mContext,viewHeight);//viewHeight == 156dp
+            //设置Banner的最佳高度
+            ViewGroup.LayoutParams banner_params = banner.getLayoutParams();
+            banner_params.height = viewHeight;
+            banner.setLayoutParams(banner_params);
+
+            //设置banner的数据 - 得到图片集合地址
+            List<String> imagesUrl = new ArrayList<>();
+
+            for (int i = 0;i < banner_info.size();i++){
+                String imageUrl = banner_info.get(i).getImage();
+                imagesUrl.add(imageUrl);
+            }
+
+            //设置图片加载器
+            banner.setImageLoader(new GlideImageLoader());
+
+            //设置图片集合
+            banner.setImages(imagesUrl);
+
+            //设置banner动画效果
+            //banner.setBannerAnimation(Transformer.DepthPage);//深度页 动画效果
+            banner.setBannerAnimation(Transformer.Accordion);//手风琴效果
+
+            //banner设置方法全部调用完毕时最后调用
+            banner.start();
+
+            //banner点击事件的监听 Deprecated：banner.setOnBannerClickListener();
+            banner.setOnBannerListener(new OnBannerListener(){
+
+                @Override
+                public void OnBannerClick(int position) {
+                    Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     /**
@@ -110,6 +231,71 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
 
         //开发过程中从1-->6
-        return 1;
+        return 2;
     }
+
+    // banner 类型item用到.重写图片加载器
+    class GlideImageLoader extends ImageLoader {
+
+        @Override
+        public void displayImage(Context context, Object path, ImageView imageView) {
+            /**
+             注意：
+             1.图片加载器由自己选择，这里不限制，只是提供几种使用方法
+             2.返回的图片路径为Object类型，由于不能确定你到底使用的那种图片加载器，
+             传输的到的是什么格式，那么这种就使用Object接收和返回，你只需要强转成你传输的类型就行，
+             切记不要胡乱强转！
+             */
+
+            //Glide 加载图片简单用法
+            path = BASE_URL_IMAGE + path;
+            Glide.with(context).load(path).into(imageView);
+        }
+
+    }
+
+    //获取屏幕的宽度
+    private int getScreenWidth(){
+
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+
+        Point size = new Point();
+        wm.getDefaultDisplay().getSize(size);
+        return  size.x;
+    }
+
 }
+
+
+
+// step4.重写图片加载器
+//class GlideImageLoader extends ImageLoader {
+//    @Override
+//    public void displayImage(Context context, Object path, ImageView imageView) {
+//        /**
+//         注意：
+//         1.图片加载器由自己选择，这里不限制，只是提供几种使用方法
+//         2.返回的图片路径为Object类型，由于不能确定你到底使用的那种图片加载器，
+//         传输的到的是什么格式，那么这种就使用Object接收和返回，你只需要强转成你传输的类型就行，
+//         切记不要胡乱强转！
+//         */
+//
+//        //Glide 加载图片简单用法
+//        Glide.with(context).load(path).into(imageView);
+//
+//        //Picasso 加载图片简单用法
+//        Picasso.with(context).load(path).into(imageView);
+//
+//        //用fresco加载图片简单用法，记得要写下面的createImageView方法
+//        Uri uri = Uri.parse((String) path);
+//        imageView.setImageURI(uri);
+//    }
+//
+//    //提供createImageView 方法，如果不用可以不重写这个方法，主要是方便自定义ImageView的创建
+//    @Override
+//    public ImageView createImageView(Context context) {
+//        //使用fresco，需要创建它提供的ImageView，当然你也可以用自己自定义的具有图片加载功能的ImageView
+//        SimpleDraweeView simpleDraweeView=new SimpleDraweeView(context);
+//        return simpleDraweeView;
+//    }
+//}
