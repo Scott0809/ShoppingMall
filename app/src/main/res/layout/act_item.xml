@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+    <!--clipChildren用于定义一个子元素是否被限制在其父元素中进行绘制。通常用于动画效果中绘制需要超出
+    原有尺寸限制的元素时使用。在这种情况下，需要将该属性值设置为false以确保该元素可以超出边界。
+    通俗一点说就是中间变大-->
+
+    <!-- android:layout_height="120dp" 是在常规手机上的最佳高度-->
+    <android.support.v4.view.ViewPager
+        android:id="@+id/act_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:clipChildren="false" />
+
+</FrameLayout>

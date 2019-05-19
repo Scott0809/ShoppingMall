@@ -38,6 +38,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
     //ButterKnife
     implementation 'com.jakewharton:butterknife:7.0.1'
     //试用了ButterKnife10.1.0 可能用的太早吧 感觉国外的公司还没有国内靠谱 建议使用成熟版本
@@ -46,16 +47,27 @@ dependencies {
     //annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     //RecyclerView 导入依赖有两种方法 https://www.jianshu.com/p/0a4c93b3e71c
     implementation 'com.android.support:recyclerview-v7:28.0.0'
-    //对okhttp3进行封装的开源框架(停止维护不能用作Https请求)
-    // https://github.com/hongyangAndroid/okhttputils httpsutils包中重写了
+
+
+    /**
+     * 对okhttp3进行封装的开源框架(停止维护不能用作Https请求原项目自带OK HTTP的问题 Leon 使用了okhttp 3.9.0)
+     * https://github.com/hongyangAndroid/okhttputils 已将代码 copy 至 httpsutils
+     */
     //implementation'com.zhy:okhttputils:2.6.2'
+
     //阿里巴巴开源框架fastjson
     implementation 'com.alibaba:fastjson:1.1.71.android'
+
     //    implementation('com.zhy:okhttputils:2.6.2') {
     //        exclude module: 'okhttp'
     //    }
+
     implementation files('libs/okhttp-3.9.0.jar')
+
     //安卓轮播图youth.banner
     implementation 'com.youth.banner:banner:1.4.10'
     implementation files('libs/glide-3.7.0.jar')
+
+    //中间大两边小的 view pager 已将代码 copy 至 magicviewpager
+    //implementation 'com.zhy:magic-viewpager:1.0.1'
 }

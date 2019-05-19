@@ -1,9 +1,13 @@
 package com.bobo.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Transition;
 import android.view.LayoutInflater;
 import com.bobo.shoppingmall.R;
 import android.view.View;
@@ -15,12 +19,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
+import com.bobo.shoppingmall.magicviewpager.RotateDownPageTransformer;
+import com.bobo.shoppingmall.magicviewpager.ScaleInTransformer;
 import com.bobo.shoppingmall.utils.DensityUtil;
+import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +51,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     public static final int CHANNEL = 1;
 
     /**活动类型*/
-    public static final int ATC = 2;
+    public static final int ACT = 2;
 
     /**秒杀类型*/
     public static final int SECKILL = 3;
@@ -83,6 +94,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         }else if (viewType == CHANNEL){//创建频道类型ViewHolder
             return new ChannelViewHolder(mContext,mLayoutInflater.inflate(R.layout.channel_item,
                     null));
+        }else if (viewType == ACT){//创建活动类型ViewHolder
+            return new ActViewHolder(mContext,mLayoutInflater.inflate(R.layout.act_item,
+                    null));
         }
         return null;
     }
@@ -102,7 +116,157 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                 ChannelViewHolder channelViewHolder = (ChannelViewHolder)viewHolder;
                 //开始设置数据
                 channelViewHolder.setData(resultBean.getChannel_info());
+            }else if (getItemViewType(position) == ACT){
+                ActViewHolder actViewHolder = (ActViewHolder)viewHolder;
+                //开始设置数据
+                actViewHolder.setData(resultBean.getAct_info());
             }
+    }
+
+    //活动类型的viewholder 注意要继承RecyclerView.ViewHolder
+    class ActViewHolder extends RecyclerView.ViewHolder{
+
+        private Context mContext;
+        private ViewPager act_viewpager;
+
+        public ActViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            this.act_viewpager = (ViewPager)itemView.findViewById(R.id.act_viewpager);
+        }
+
+        public void setData(final List<ResultBeanData.ResultBean.ActInfoBean> act_info){
+
+            //设置间距
+            act_viewpager.setPageMargin(20);
+            act_viewpager.setOffscreenPageLimit(3);//>=3
+
+            //setPageTransformer 决定动画效果
+            act_viewpager.setPageTransformer(true, new ScaleInTransformer());
+
+            //给ViewPager 设置适配器
+            act_viewpager.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+
+                    //return act_info == null ? 0 : act_info.size();
+
+                    if (act_info == null ) {
+                        return 0;//避免空指针
+                    }else if (act_info.size() == 1){
+                        return act_info.size();// 一张图片时不用流动
+                    }
+
+                    //这样写是为了让banner图一直可以自动滚动-注意适配器其他方法中的position一定要取余
+                    // 避免数组越界
+                    return Integer.MAX_VALUE;
+                }
+
+                /**
+                 * @param view 页面
+                 * @param object instantiateItem 方法返回的值
+                 * @return
+                 */
+                @Override
+                public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+                    return view == object;
+                }
+
+                /**
+                 * @param container  view pager 自己
+                 * @param position 对应页面的位置
+                 * @return
+                 */
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container,int position) {
+
+                    //2019-5-20 解决左划白屏的bug ↓
+                    position = position % act_info.size();
+                    if (position < 0) {
+                        position =  act_info.size() + position;
+                    }
+                    //2019-5-20 解决左划白屏的bug ↑
+
+                    final ImageView imageView = new ImageView(mContext);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
+                    //----------------------------------动态计算最佳宽高↓----------------------------
+                    //动态的计算出 act_viewpager 的宽度
+                    int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+                    int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+                    //注意这里写act_viewpager 会 java.lang.Stack Over flow Error: stack size 8MB
+                    // 有的报错信息后来才写了imageview 貌似也能动态计算最佳宽高先这样
+                    imageView.measure(w, h);
+                    final int actW = act_viewpager.getMeasuredWidth();//这里得出的宽度单位是px
+                    //int actW = DensityUtil.px2dip(mContext,(float)act_viewpager.getMeasuredWidth());
+
+                    String url = BASE_URL_IMAGE+act_info.get(position).getIcon_url();
+
+                    //获取图片真正的宽高
+                    Glide.with(mContext).load(url).into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super
+                                GlideDrawable> glideAnimation) {
+                            //Intrinsic固有的，内在的，本质的
+                            int widthImg = glideDrawable.getIntrinsicWidth();
+                            int heightImg = glideDrawable.getIntrinsicHeight();
+
+                            // 控件的宽度（屏幕宽度-左右边距）actW * （图片高 ÷ 图片宽）
+                            ViewGroup.LayoutParams params = act_viewpager.getLayoutParams();
+
+                            //Math.round 函数返回一个数字四舍五入后最接近的整数
+                            params.height  = Math.round(actW * (float)(heightImg / (float)widthImg));
+                            //int tW =  DensityUtil.px2dip(mContext,(float)params.height); 120dp
+                            act_viewpager.setLayoutParams(params);
+                        }
+                    });
+                    //----------------------------------动态计算最佳宽高↑----------------------------
+
+                    Glide.with(mContext).load(BASE_URL_IMAGE+act_info.get(position).getIcon_url())
+                            .placeholder(R.drawable.occupation).into(imageView);
+                    //添加到容器中
+                    container.addView(imageView);
+
+                    //设置点击事件
+                    final int finalPosition = position;
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(mContext,"点击了"+ finalPosition,Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    return imageView;
+                }
+
+                @Override
+                public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object
+                        object) {
+
+                    //警告:为了实现imageview 轮播图无限往一个方向滑动 不要在这里调用removeView
+                    //container.removeView((View)object);
+
+                    //2019-5-19 解决左划白屏的问题↓
+                    container.removeView((View)object);
+                    if (object != null){
+                        object = null;
+                    }
+                }
+            });
+
+            /**
+             * 设置view pager的初始位置从max value的中间开始 实现用户可以左划banner
+             * 注意：①细节并不是从第一张图片开始展示 需要处理一下
+             * 注意：② 放在setAdapter后面才起作用
+             */
+            if (act_info.size() > 1){
+                act_viewpager.setCurrentItem(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % act_info.size());
+            }else {
+                //只有一张图就不要滚动了
+                act_viewpager.setCurrentItem(0);
+            }
+        }
     }
 
     //频道类型的viewholder 注意要继承RecyclerView.ViewHolder
@@ -207,8 +371,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             case CHANNEL:
                 currentType = CHANNEL;
                 break;
-            case ATC:
-                currentType = ATC;
+            case ACT:
+                currentType = ACT;
                 break;
             case SECKILL:
                 currentType = SECKILL;
@@ -231,7 +395,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
 
         //开发过程中从1-->6
-        return 2;
+        return 3;
     }
 
     // banner 类型item用到.重写图片加载器

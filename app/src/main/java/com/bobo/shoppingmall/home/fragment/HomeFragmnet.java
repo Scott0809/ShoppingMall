@@ -1,6 +1,6 @@
 package com.bobo.shoppingmall.home.fragment;
 
-import android.drm.ProcessedData;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,14 +15,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.home.adapter.HomeFragmentAdapter;
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
 import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
 import com.bobo.shoppingmall.httpsUtils.callback.StringCallback;
-import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.utils.Constants;
-import com.bobo.shoppingmall.utils.LELog;
-import com.bobo.shoppingmall.base.BaseFragment;
+import com.bobo.shoppingmall.utils.StBarUtil;
+import com.bobo.shoppingmall.utils.UtilsStyle;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,9 +45,12 @@ public class HomeFragmnet extends BaseFragment {
     @Bind(R.id.ib_top)
     ImageButton ibTop;
 
+
     private HomeFragmentAdapter adapter;
 
-    /**首页数据对象*/
+    /**
+     * 首页数据对象
+     */
     private ResultBeanData.ResultBean resultBean;
 
     @Override
@@ -55,6 +59,8 @@ public class HomeFragmnet extends BaseFragment {
         Log.e("TAG", "主页面fragment的UI被初始化了");
         View view = View.inflate(mContext, R.layout.fragment_home, null);
 
+        //解决高版本手机状态栏上文字 和 titleBar重叠的问题
+        StBarUtil.setOccupationHeight(getActivity(),view);
 
         return view;
     }
@@ -73,50 +79,50 @@ public class HomeFragmnet extends BaseFragment {
         String url = Constants.HOME_URL;
         OkHttpUtils.get().url(url).build().execute(new StringCallback() {
 
-                    /**
-                     * 当请求失败的时候回调
-                     * @param call
-                     * @param e
-                     * @param id
-                     */
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Toast.makeText(getContext(),"请求失败请检查网络",Toast.LENGTH_SHORT).show();
-                        //LELog.showLogWithLineNum(5,e.getMessage());
-                    }
+            /**
+             * 当请求失败的时候回调
+             * @param call
+             * @param e
+             * @param id
+             */
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Toast.makeText(getContext(), "请求失败请检查网络", Toast.LENGTH_SHORT).show();
+                //LELog.showLogWithLineNum(5,e.getMessage());
+            }
 
-                    /**
-                     * 当联网成功的时候回调
-                     * @param response  请求成功的数据
-                     * @param id
-                     */
-                    @Override
-                    public void onResponse(String response, int id) {
-                        //LELog.showLogWithLineNum(5,"请求成功"+response);
-                        //解析数据
-                        processedData(response);
-                    }
-                });
+            /**
+             * 当联网成功的时候回调
+             * @param response  请求成功的数据
+             * @param id
+             */
+            @Override
+            public void onResponse(String response, int id) {
+                //LELog.showLogWithLineNum(5,"请求成功"+response);
+                //解析数据
+                processedData(response);
+            }
+        });
     }
 
     //使用阿里开源的框架法fastjson解析数据
     private void processedData(String json) {
 
         //解析数据 注意gsonfromt 生成的是fastjson数据
-        ResultBeanData resultBeanData = JSON.parseObject(json,ResultBeanData.class);
+        ResultBeanData resultBeanData = JSON.parseObject(json, ResultBeanData.class);
 
         //首页数据模型对象
         resultBean = resultBeanData.getResult();
 
-        if (resultBean != null){//有数据
+        if (resultBean != null) {//有数据
             //设置适配器
-            adapter = new HomeFragmentAdapter(mContext,resultBean);
+            adapter = new HomeFragmentAdapter(mContext, resultBean);
             rvHome.setAdapter(adapter);
 
             //设置布局管理者 注意RecyclerView 要设置
-            rvHome.setLayoutManager(new GridLayoutManager(mContext,1));
+            rvHome.setLayoutManager(new GridLayoutManager(mContext, 1));
 
-        }else{//没有数据
+        } else {//没有数据
 
         }
 
@@ -141,10 +147,10 @@ public class HomeFragmnet extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_search_home:
-                Toast.makeText(getContext(),"搜索",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "搜索", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_message_home:
-                Toast.makeText(getContext(),"消息中心",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "消息中心", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ib_top:
                 //让RecyclerView 滚动到顶部
