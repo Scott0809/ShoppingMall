@@ -1,13 +1,14 @@
 package com.bobo.shoppingmall.home.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Transition;
 import android.view.LayoutInflater;
 import com.bobo.shoppingmall.R;
 import android.view.View;
@@ -16,13 +17,11 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
-import com.bobo.shoppingmall.magicviewpager.RotateDownPageTransformer;
 import com.bobo.shoppingmall.magicviewpager.ScaleInTransformer;
-import com.bobo.shoppingmall.utils.DensityUtil;
-import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -33,7 +32,10 @@ import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
 
 
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.bobo.shoppingmall.utils.Constants.BASE_URL_IMAGE;
@@ -97,6 +99,15 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         }else if (viewType == ACT){//创建活动类型ViewHolder
             return new ActViewHolder(mContext,mLayoutInflater.inflate(R.layout.act_item,
                     null));
+        }else if (viewType == SECKILL){//创建秒杀类型ViewHolder
+            return new SeckillViewHolder(mContext,mLayoutInflater.inflate(R.layout.seckill_item,
+                    null));
+        }else if (viewType == RECOMMEND){//创建推荐类型ViewHolder
+            return new RecommendViewHolder(mContext,mLayoutInflater.inflate(R.layout.recommend_item,
+                    null));
+        }else if (viewType == HOT){//创建推荐类型ViewHolder
+            return new HotViewHolder(mContext,mLayoutInflater.inflate(R.layout.hot_item,
+                    null));
         }
         return null;
     }
@@ -120,7 +131,161 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                 ActViewHolder actViewHolder = (ActViewHolder)viewHolder;
                 //开始设置数据
                 actViewHolder.setData(resultBean.getAct_info());
+            }else if (getItemViewType(position) == SECKILL){
+                SeckillViewHolder seckillViewHolder = (SeckillViewHolder)viewHolder;
+                //开始设置数据
+                seckillViewHolder.setData(resultBean.getSeckill_info());
+            }else if (getItemViewType(position) == RECOMMEND){
+                RecommendViewHolder recommendViewHolder = (RecommendViewHolder)viewHolder;
+                //开始设置数据
+                recommendViewHolder.setData(resultBean.getRecommend_info());
+            }else if (getItemViewType(position) == HOT){
+                HotViewHolder hotViewHolder = (HotViewHolder)viewHolder;
+                //开始设置数据
+                hotViewHolder.setData(resultBean.getHot_info());
             }
+    }
+
+    //热销类型的ViewHolder 注意要继承RecyclerView.ViewHolder
+    class HotViewHolder extends RecyclerView.ViewHolder {
+
+        private Context mContext;
+
+        //查看更多
+        private TextView tv_more_hot;
+
+        //展示内容的 GridView
+        private GridView gv_hot;
+
+        private HotGridViewAdapter adapter;
+
+        public HotViewHolder(final Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            this.tv_more_hot = (TextView)itemView.findViewById(R.id.tv_more_hot);
+            this.gv_hot = (GridView)itemView.findViewById(R.id.gv_hot);
+            //设置item的点击事件监听
+            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext,"热销"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
+            //1.有数据2.设置gridview适配器
+            adapter = new HotGridViewAdapter(mContext,hot_info);
+            gv_hot.setAdapter(adapter);
+        }
+    }
+
+    //推荐类型的ViewHolder 注意要继承RecyclerView.ViewHolder
+    class RecommendViewHolder extends RecyclerView.ViewHolder{
+
+        private Context mConext;
+
+        //查看更多
+        private TextView tv_more_recommend;
+
+        //展示内容的gridview
+        private GridView gv_recommend;
+
+        private RecommendGridViewAdapter adapter;
+
+
+        public RecommendViewHolder(final Context mContext, View itemView) {
+            super(itemView);
+            this.mConext = mContext;
+            this.tv_more_recommend = (TextView)itemView.findViewById(R.id.tv_more_recommend);
+            this.gv_recommend = (GridView)itemView.findViewById(R.id.gv_recommend);
+
+            gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
+            //1.有数据了2.设置适配器
+            adapter = new RecommendGridViewAdapter(mConext,recommend_info);
+            gv_recommend.setAdapter(adapter);
+        }
+    }
+
+    //秒杀类型的viewholder 注意要继承RecyclerView.ViewHolder
+    class SeckillViewHolder extends RecyclerView.ViewHolder{
+
+        private Context mContext;
+
+        //倒计时 文本
+        private TextView tv_time_sekill;
+
+        //最后面的点击更多
+        private TextView tv_more_seckill;
+
+        //横向滚动的RecyclerView
+        private RecyclerView rv_seckill;
+
+        private SeckillRecyclerViewAdapter adapter;
+
+        /**秒杀：相差多少时间-单位是毫秒*/
+        private long dt = 0;
+
+        /**用作倒计时的handler*/
+        private Handler handler = new Handler(){
+
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                dt -= 1000;
+                SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                String time = formatter.format(new Date(dt));
+                tv_time_sekill.setText(time);
+
+                //移除消息
+                handler.removeMessages(0);
+                //再发消息
+                handler.sendEmptyMessageDelayed(0,1000);
+                if (dt <= 0){
+                    //把消息移除
+                    handler.removeCallbacksAndMessages(null);
+                }
+            }
+        };
+
+        public SeckillViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            tv_time_sekill = (TextView)itemView.findViewById(R.id.tv_time_sekill);
+            tv_more_seckill = (TextView)itemView.findViewById(R.id.tv_more_seckill);
+            rv_seckill = (RecyclerView)itemView.findViewById(R.id.rv_seckill);
+        }
+
+        public void setData(ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
+
+            //1.得到数据了 2.设置数据：文本和RecyclerView的数据
+            adapter = new SeckillRecyclerViewAdapter(mContext,seckill_info.getList());
+            rv_seckill.setAdapter(adapter);
+
+            //设置recycview的布局管理器 LinearLayoutManager.HORIZONTAL 横向
+            rv_seckill.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,
+                    false));
+
+            //设置item的点击事件
+            adapter.setOnSeckillRecycleView(new SeckillRecyclerViewAdapter.OnSeckillRecycleView() {
+                @Override
+                public void onItemClick(int position) {
+                    Toast.makeText(mContext,"秒杀"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            //秒杀倒计时 - 毫秒
+            dt = Long.valueOf(seckill_info.getEnd_time()) - Long.valueOf(seckill_info.getStart_time());
+            handler.sendEmptyMessageDelayed(0,1000);
+        }
     }
 
     //活动类型的viewholder 注意要继承RecyclerView.ViewHolder
@@ -395,7 +560,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
 
         //开发过程中从1-->6
-        return 3;
+        return 6;
     }
 
     // banner 类型item用到.重写图片加载器

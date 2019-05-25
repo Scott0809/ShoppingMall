@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="#fff"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <!--android:layout_width="380dp"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/home_arrow_left_flash"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="今日闪购 距·结束"
+            android:textColor="#000"/>
+        <TextView
+            android:id="@+id/tv_time_sekill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/time_sheape"
+            android:padding="2dp"
+            android:text="00:00:00"
+            android:textColor="#fff"/>
+        <!--drawablePadding：这个属性在 我们给view设置的宽度或者高度足够小（以至于将两者挤压在一起）
+        的时候，这个属性才会起作用，也即在图片和文字之间会有间距产生。-->
+        <TextView
+            android:id="@+id/tv_more_seckill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="5dp"
+            android:drawableRight="@drawable/home_arrow_right"
+            android:gravity="end"
+            android:text="查看更多"/>
+    </LinearLayout>
+
+    <!--android:layout_width="380dp"-->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_seckill"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

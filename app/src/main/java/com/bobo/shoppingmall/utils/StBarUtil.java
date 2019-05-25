@@ -52,8 +52,8 @@ public class StBarUtil {
                 view.setVisibility(View.VISIBLE);
                 ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) view.getLayoutParams();
                 //Toast.makeText(activity,">"+getStatusBarHeight(activity),Toast.LENGTH_SHORT).show();
-                if (getStatusBarHeight(activity) > 50){//发现在老手机上 状态栏最佳 50 是最佳高度
-                    params.height = getStatusBarHeight(activity) - 50;
+                if (getStatusBarHeight(activity) > 54){//发现在老手机上 状态栏最佳 54 是最佳高度
+                    params.height = getStatusBarHeight(activity) - 45;
                 }
                 view.setLayoutParams(params);
             }
