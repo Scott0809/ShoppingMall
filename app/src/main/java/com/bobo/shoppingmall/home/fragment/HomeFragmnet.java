@@ -119,8 +119,28 @@ public class HomeFragmnet extends BaseFragment {
             adapter = new HomeFragmentAdapter(mContext, resultBean);
             rvHome.setAdapter(adapter);
 
+            GridLayoutManager manager = new GridLayoutManager(mContext, 1);
+
+            //设置跨度大小的监听
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+
+                    if (position <= 3){
+                        //隐藏返回顶部的按钮
+                        ibTop.setVisibility(View.GONE);
+                    }else{
+                        //显示返回顶部的按钮
+                        ibTop.setVisibility(View.VISIBLE);
+                    }
+
+                    //注意这里要返回1 返回0 则什么都不显示比1大报错
+                    return 1;
+                }
+            });
+
             //设置布局管理者 注意RecyclerView 要设置
-            rvHome.setLayoutManager(new GridLayoutManager(mContext, 1));
+            rvHome.setLayoutManager(manager);
 
         } else {//没有数据
 

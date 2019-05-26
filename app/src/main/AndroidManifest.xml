@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bobo.shoppingmall">
 
-    <!--联网请求的权限-->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 联网请求的权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".app.MyApplication"
@@ -21,9 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--android:configChanges="" 解决横竖屏切换Fragment内容重叠的问题-->
-        <activity android:name=".app.MainActivity" android:configChanges="orientation|screenSize|keyboardHidden"/>
-
+        <!-- android:configChanges="" 解决横竖屏切换Fragment内容重叠的问题 -->
+        <activity
+            android:name=".app.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden" />
+        <activity android:name=".app.GoodsInfoActivity"></activity>
     </application>
 
 </manifest>

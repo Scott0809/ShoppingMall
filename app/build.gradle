@@ -48,7 +48,6 @@ dependencies {
     //RecyclerView 导入依赖有两种方法 https://www.jianshu.com/p/0a4c93b3e71c
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 
-
     /**
      * 对okhttp3进行封装的开源框架(停止维护不能用作Https请求原项目自带OK HTTP的问题 Leon 使用了okhttp 3.9.0)
      * https://github.com/hongyangAndroid/okhttputils 已将代码 copy 至 httpsutils

@@ -1,6 +1,7 @@
 package com.bobo.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bobo.shoppingmall.app.GoodsInfoActivity;
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
 import com.bobo.shoppingmall.magicviewpager.ScaleInTransformer;
 import com.bumptech.glide.Glide;
@@ -516,9 +518,16 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                 @Override
                 public void OnBannerClick(int position) {
                     Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
         }
+    }
+
+    /**启动商品信息列表页面 跳转到商品详情页的方法*/
+    private void startGoodsInfoActivity(){
+        Intent intent = new Intent(mContext, GoodsInfoActivity.class);
+        mContext.startActivity(intent);
     }
 
     /**
