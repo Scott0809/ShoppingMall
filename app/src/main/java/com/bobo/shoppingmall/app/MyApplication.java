@@ -7,6 +7,7 @@ import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.android.api.JPushInterface;
 import okhttp3.OkHttpClient;
 
 /**
@@ -21,6 +22,11 @@ public class MyApplication extends Application {
 
         //配置 OkHttpUtils
         //initOkhttpClient();
+
+        //初始化极光推送
+        JPushInterface.init(this);
+        JPushInterface.setDebugMode(true);
+
 
     }
 

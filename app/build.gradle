@@ -4,13 +4,29 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
+        applicationId "com.bobo.shoppingmall" //JPush 上注册的包名.
         android.defaultConfig.javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
-        applicationId "com.bobo.shoppingmall"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
+        //------------------------jpush------↓-------------------------------
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "62da2b1e08a9ba6613b175b8", //JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+        ]
+        //------------------------jpush------↑-------------------------------
+
     }
     buildTypes {
         release {
@@ -69,4 +85,15 @@ dependencies {
 
     //中间大两边小的 view pager 已将代码 copy 至 magicviewpager
     //implementation 'com.zhy:magic-viewpager:1.0.1'
+
+    //-------------------jpush ↓--------------------------
+    //我在控制台推送消息的时候总是 提示：没有满足条件的推送目标 换了原来的版本可以正常推送
+    //implementation 'cn.jiguang.sdk:jpush:3.3.1'  // 此处以JPush 3.3.1 版本为例。
+    //implementation 'cn.jiguang.sdk:jcore:2.0.1'  // 此处以JCore 2.0.1 版本为例。
+    implementation 'cn.jiguang.sdk:jpush:3.2.0' // 此处以JPush 3.2.0 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:1.2.7'// 此处以JPush 3.2.0 版本为例。
+    //-------------------jpush ↑--------------------------
+
+    //app版本更新的第三方框架
+    implementation 'com.github.maning0303:MNUpdateAPK:V1.1.8'
 }
