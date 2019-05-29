@@ -19,12 +19,17 @@ import com.maning.updatelibrary.InstallUtils;
  */
 public class UpdateUtils {
 
-//    private static String updateUrl = "https://github.com/leonInShanghai/ShoppingMall/blob/master" +
-//            "/app/release/app-release.apk";
     private static String  updateUrl = "https://github.com/leonInShanghai/ShoppingMall/raw/master/app/" +
             "release/app-release.apk";
 
+    //避免用户重复下载的变量（用户下载的时候home键大返回）
+    private static String DOWNLOADING = "DOWNLOADING";
+    private static boolean downloading = false;
+
     public static void checkforUpdate(Context context,Activity activity){
+
+        //已经下载了就不要再重复下载了（用户下载的时候home键大返回）
+        if (SpUtils.getBoolean(context,DOWNLOADING)){ return;}
 
         //是否强制更新
         boolean mandatoryUpdates = SpUtils.getBoolean(context, Constants.MANDATORY_UPDATES);
@@ -90,6 +95,8 @@ public class UpdateUtils {
                             @Override
                             public void onStart() {
                                 pd.show();
+                                //downloading = true;
+                                SpUtils.setBoolean(context,DOWNLOADING,true);
                             }
 
                             @Override
@@ -101,12 +108,16 @@ public class UpdateUtils {
                                     public void onSuccess() {
                                         //更新成功了持久化保存的字段设为false
                                         SpUtils.setBoolean(context,udateType,false);
+                                        //下载成功和失败 是否下载过都要变为false
+                                        SpUtils.setBoolean(context,DOWNLOADING,false);
                                     }
 
                                     @Override
                                     public void onFail(Exception e) {
                                         //更新失败了持久化保存的字段设为true 直到成功才能改变为false
                                         SpUtils.setBoolean(context,udateType,true);
+                                        //下载成功和失败 是否下载过都要变为false
+                                        SpUtils.setBoolean(context,DOWNLOADING,false);
                                     }
                                 });
                             }
@@ -123,6 +134,8 @@ public class UpdateUtils {
                             public void onFail(Exception e) {
                                 //更新失败了持久化保存的字段设为true 直到成功才能改变为false
                                 SpUtils.setBoolean(context,udateType,true);
+                                //下载成功和失败 是否下载过都要变为false
+                                SpUtils.setBoolean(context,DOWNLOADING,false);
                                 LELog.showLogWithLineNum(5,"更新成功"+Thread.currentThread().getName());
                                 //Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                                 pd.dismiss();
@@ -130,7 +143,8 @@ public class UpdateUtils {
 
                             @Override
                             public void cancle() {
-                                //Toast.makeText(context,"更新失败",Toast.LENGTH_SHORT).show();
+                                //下载成功和失败 是否下载过都要变为false
+                                SpUtils.setBoolean(context,DOWNLOADING,false);
                                 pd.dismiss();
                             }
                         }).startDownload();
