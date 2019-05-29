@@ -23,7 +23,7 @@ public class UpdateUtils {
             "release/app-release.apk";
 
     //避免用户重复下载的变量（用户下载的时候home键大返回）
-    private static String DOWNLOADING = "DOWNLOADING";
+    public static String DOWNLOADING = "DOWNLOADING";
     private static boolean downloading = false;
 
     public static void checkforUpdate(Context context,Activity activity){

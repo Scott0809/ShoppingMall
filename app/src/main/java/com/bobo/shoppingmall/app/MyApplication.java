@@ -4,6 +4,8 @@ import android.app.Application;
 
 
 import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
+import com.bobo.shoppingmall.utils.SpUtils;
+import com.bobo.shoppingmall.utils.UpdateUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -40,4 +42,14 @@ public class MyApplication extends Application {
 
         OkHttpUtils.initClient(okHttpClient);
     }
+
+    //app被杀了，你监听application的onDestroy方法就行@Override
+        public void onTerminate() {
+            // 程序终止的时候执行
+            //下载成功和失败 是否下载过都要变为false
+            SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
+            super.onTerminate();
+        }
+
+
 }
