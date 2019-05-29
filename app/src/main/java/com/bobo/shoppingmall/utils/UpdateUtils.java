@@ -19,6 +19,11 @@ import com.maning.updatelibrary.InstallUtils;
  */
 public class UpdateUtils {
 
+//    private static String updateUrl = "https://github.com/leonInShanghai/ShoppingMall/blob/master" +
+//            "/app/release/app-release.apk";
+    private static String  updateUrl = "https://github.com/leonInShanghai/ShoppingMall/raw/master/app/" +
+            "release/app-release.apk";
+
     public static void checkforUpdate(Context context,Activity activity){
 
         //是否强制更新
@@ -39,7 +44,7 @@ public class UpdateUtils {
         pd = new ProgressDialog(context);
         pd.setCancelable(false);// 必须一直下载完，不可取消
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pd.setMessage("正在下载安装包，请稍后");
+        pd.setMessage("正在下载，国外服务下载较慢...");
         pd.setTitle("版本升级");
 
 
@@ -65,6 +70,9 @@ public class UpdateUtils {
         leAlertDialog.setClicklistener(new LeAlertDialog.ClickListenerInterface() {
             @Override
             public void doConfirm() {
+
+                leAlertDialog.dismiss();
+
                 //用户点击了更新
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     //先获取是否有安装未知来源应用的权限
@@ -77,7 +85,7 @@ public class UpdateUtils {
                         return;
                     }
                 }
-                InstallUtils.with(context).setApkUrl("url").setApkName("波波商城")
+                InstallUtils.with(context).setApkUrl(updateUrl).setApkName("波波商城")
                         .setCallBack(new InstallUtils.DownloadCallBack() {
                             @Override
                             public void onStart() {
@@ -91,11 +99,14 @@ public class UpdateUtils {
                                 InstallUtils.installAPK(context, s, new InstallUtils.InstallCallBack() {
                                     @Override
                                     public void onSuccess() {
-
+                                        //更新成功了持久化保存的字段设为false
+                                        SpUtils.setBoolean(context,udateType,false);
                                     }
 
                                     @Override
                                     public void onFail(Exception e) {
+                                        //更新失败了持久化保存的字段设为true 直到成功才能改变为false
+                                        SpUtils.setBoolean(context,udateType,true);
                                     }
                                 });
                             }
@@ -110,8 +121,8 @@ public class UpdateUtils {
 
                             @Override
                             public void onFail(Exception e) {
-                                //更新成功了持久化保存的字段设为false
-                                SpUtils.setBoolean(context,udateType,false);
+                                //更新失败了持久化保存的字段设为true 直到成功才能改变为false
+                                SpUtils.setBoolean(context,udateType,true);
                                 LELog.showLogWithLineNum(5,"更新成功"+Thread.currentThread().getName());
                                 //Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                                 pd.dismiss();
