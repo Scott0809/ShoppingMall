@@ -15,5 +15,11 @@ public class Constants {
     /**图片的基本路径*/
     public static final String BASE_URL_IMAGE =  BASE_URL+"/img";
 
+    /**(app版本)强制更新持久化保存的key*/
+    public static final String MANDATORY_UPDATES = "mandatory_updates";
+
+    /**(app版本)普通更新持久化保存的key*/
+    public static final String UPDATES = "updates2019529";
+
 
 }

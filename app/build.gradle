@@ -87,11 +87,11 @@ dependencies {
     //implementation 'com.zhy:magic-viewpager:1.0.1'
 
     //-------------------jpush ↓--------------------------
-    //我在控制台推送消息的时候总是 提示：没有满足条件的推送目标 换了原来的版本可以正常推送
-    //implementation 'cn.jiguang.sdk:jpush:3.3.1'  // 此处以JPush 3.3.1 版本为例。
-    //implementation 'cn.jiguang.sdk:jcore:2.0.1'  // 此处以JCore 2.0.1 版本为例。
-    implementation 'cn.jiguang.sdk:jpush:3.2.0' // 此处以JPush 3.2.0 版本为例。
-    implementation 'cn.jiguang.sdk:jcore:1.2.7'// 此处以JPush 3.2.0 版本为例。
+    //我在控制台推送消息的时候总是 提示：没有满足条件的推送目标 换了原来的版本可以正常推送（已解决）
+    implementation 'cn.jiguang.sdk:jpush:3.3.1'  // 此处以JPush 3.3.1 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:2.0.1'  // 此处以JCore 2.0.1 版本为例。
+    //implementation 'cn.jiguang.sdk:jpush:3.2.0' // 此处以JPush 3.2.0 版本为例。
+    //implementation 'cn.jiguang.sdk:jcore:1.2.7'// 此处以JPush 3.2.0 版本为例。
     //-------------------jpush ↑--------------------------
 
     //app版本更新的第三方框架

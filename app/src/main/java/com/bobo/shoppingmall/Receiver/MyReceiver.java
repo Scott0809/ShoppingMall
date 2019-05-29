@@ -10,7 +10,9 @@ import android.util.Log;
 
 
 import com.bobo.shoppingmall.app.MainActivity;
+import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.LELog;
+import com.bobo.shoppingmall.utils.SpUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,6 +80,18 @@ public class MyReceiver extends BroadcastReceiver {
             } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
                 LELog.showLogWithLineNum(5,"MyReceiver");
                 Log.e(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
+
+                //TODO：通过极光发送命令要更新
+                String update = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+
+                if (update.equals("leon_orders_mandatory_updates")){
+                    //强制更新
+                    SpUtils.setBoolean(context, Constants.MANDATORY_UPDATES,true);
+                }else{
+                    //非强制更新
+                    SpUtils.setBoolean(context, Constants.UPDATES,true);
+                }
+
                 processCustomMessage(context, bundle);
 
             } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {

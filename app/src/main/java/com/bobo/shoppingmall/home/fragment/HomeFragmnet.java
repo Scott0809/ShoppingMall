@@ -1,5 +1,7 @@
 package com.bobo.shoppingmall.home.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +25,7 @@ import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
 import com.bobo.shoppingmall.httpsUtils.callback.StringCallback;
 import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.StBarUtil;
+import com.bobo.shoppingmall.utils.UpdateUtils;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 
 import butterknife.Bind;
@@ -52,6 +55,16 @@ public class HomeFragmnet extends BaseFragment {
      * 首页数据对象
      */
     private ResultBeanData.ResultBean resultBean;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //每次进入首页判断是否有新版本
+        if (getContext() != null && getActivity() != null){
+            UpdateUtils.checkforUpdate(getContext(),getActivity());
+        }
+    }
 
     @Override
     public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
