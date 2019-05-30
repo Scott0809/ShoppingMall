@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.utils.Constants;
+import com.bobo.shoppingmall.utils.SpUtils;
 
 /**
  * Created by Leon on 2018/5/19.
@@ -173,6 +175,16 @@ public class LeAlertDialog extends Dialog{
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+
+        //如果时强制更新什么都不做
+        if (SpUtils.getBoolean(context, Constants.MANDATORY_UPDATES)){
+            return;
+        }
+
+        super.onBackPressed();
+    }
 
     /**使用方法
      *
