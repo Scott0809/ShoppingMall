@@ -29,7 +29,8 @@ public class MyApplication extends Application {
         JPushInterface.init(this);
         JPushInterface.setDebugMode(true);
 
-
+        //程序重新开始的时候允许校验更新状态
+        SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
     }
 
     //配置 OkHttpUtils https://github.com/hongyangAndroid/okhttputils
@@ -46,7 +47,7 @@ public class MyApplication extends Application {
     //app被杀了，你监听application的onDestroy方法就行@Override
         public void onTerminate() {
             // 程序终止的时候执行
-            //下载成功和失败 是否下载过都要变为false
+            //下载成功和失败 是否下载过都要变为false（用户结束程序进程也要改为false）
             SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
             super.onTerminate();
         }
