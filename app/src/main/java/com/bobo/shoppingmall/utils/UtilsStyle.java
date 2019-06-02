@@ -16,6 +16,8 @@ import java.lang.reflect.Method;
 public class UtilsStyle {
 
 
+    private static boolean mIsDark = false;
+
 
     /**
      * 设置魅族手机状态栏图标颜色风格
@@ -93,9 +95,16 @@ public class UtilsStyle {
      * @param activity
      * @return 1:MIUUI 2:Flyme 3:android6.0 0:设置失败
      */
-    public static void statusBarLightMode(Activity activity) {
+    public static void statusBarLightMode(Activity activity,boolean isDark) {
+
+         mIsDark = isDark;
+
+
         int result = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mIsDark == true) {
+
+            //设置状态栏黑色字体
+
             if (MIUISetStatusBarLightMode(activity.getWindow(), true)) {
                 //result = 1;
                 StatusBarLightMode(activity, 1);
@@ -106,6 +115,20 @@ public class UtilsStyle {
                 //activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 //result = 3;
                 StatusBarLightMode(activity, 3);
+            }
+        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mIsDark == false){
+            //设置状态栏白色字体
+
+            if (MIUISetStatusBarLightMode(activity.getWindow(), false)) {
+                //result = 1;
+                StatusBarLightMode2(activity, 1);
+            } else if (FlymeSetStatusBarLightMode(activity.getWindow(), false)) {
+                //result = 2;
+                StatusBarLightMode2(activity, 2);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                //activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                //result = 3;
+                StatusBarLightMode2(activity, 3);
             }
         }
     }
@@ -124,12 +147,32 @@ public class UtilsStyle {
             FlymeSetStatusBarLightMode(activity.getWindow(), true);
         } else if (type == 3) {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                   | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
     }
 
+
     /**
-     * 已知系统类型时，清除MIUI或flyme或6.0以上版本状态栏字体深色模式
+     * 已知系统类型时，设置状态栏字体图标为深色。
+     * 适配4.4以上版本MIUIV、Flyme和6.0以上版本其他Android
+     *
+     * @param activity
+     * @param type     1:MIUUI 2:Flyme 3:android6.0
+     */
+    public static void StatusBarLightMode2(Activity activity, int type) {
+        if (type == 1) {
+            MIUISetStatusBarLightMode(activity.getWindow(), false);
+        } else if (type == 2) {
+            FlymeSetStatusBarLightMode(activity.getWindow(), false);
+        } else if (type == 3) {
+            activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+    }
+
+
+    /**
+     * 已知系统类型时，清除MIUI或flyme或6.0以上版本状态栏字体深色模式 这个方法没有用到过
      * @param activity
      * @param type     1:MIUUI 2:Flyme 3:android6.0
      */

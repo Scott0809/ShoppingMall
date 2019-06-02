@@ -81,7 +81,7 @@ public class MyReceiver extends BroadcastReceiver {
                 LELog.showLogWithLineNum(5,"MyReceiver");
                 Log.e(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
 
-                //TODO：通过极光发送命令要更新
+                //TODO：通过极光（自定义消息）发送命令要更新
                 String update = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 
                 if (update.equals("leon_orders_mandatory_updates")){
@@ -171,7 +171,6 @@ public class MyReceiver extends BroadcastReceiver {
 //                    invationInfo.setMessage((String) bundle.get(key));
 //                    invationInfo.setCurrentTime(System.currentTimeMillis());
 //                    Model.getInstance().getDbManager().getInviteTableDao().addInvitation(invationInfo);
-                    LELog.showLogWithLineNum(5,"--------收到新的信息------2019：04：16："+bundle.get(key));
 
                }
             }

@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
@@ -59,8 +60,6 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //设置状态栏上的字体为黑色-因为本页面是白色必须设置
-        UtilsStyle.statusBarLightMode(this);
 
         //ButterKnife和当前activity绑定
         ButterKnife.bind(this);
@@ -147,4 +146,32 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
+
+
+
 }
+
+
+//   切换Fragmengt的方法源代码 总感觉这种方式没有view pager 靠谱
+//    private void switchFragment(Fragment fromFragment, BaseFragment nextFragment) {
+//        if (mContext != nextFragment) {
+//            mContext = nextFragment;
+//            if (nextFragment != null) {
+//                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                //判断nextFragment是否添加
+//                if (!nextFragment.isAdded()) {
+//                    //隐藏当前Fragment
+//                    if (fromFragment != null) {
+//                        transaction.hide(fromFragment);
+//                    }
+//                    transaction.add(R.id.frameLayout, nextFragment).commit();
+//                } else {
+//                    //隐藏当前Fragment
+//                    if (fromFragment != null) {
+//                        transaction.hide(fromFragment);
+//                    }
+//                    transaction.show(nextFragment).commit();
+//                }
+//            }
+//        }
+//    }

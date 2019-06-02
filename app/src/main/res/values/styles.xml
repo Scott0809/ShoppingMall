@@ -19,8 +19,12 @@
         <!-- 窗口透明的导航栏 没有用到-->
         <!--<item name="android:windowTranslucentNavigation" tools:ignore="NewApi">true</item>-->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <!--原来 @color/colorPrimaryDark 通过这样设置为达到透明效果-->
-        <item name="colorPrimaryDark">#00000000</item>
+        <!--下面这句代码会 让状态栏有一种半透明的效果-->
+        <!--<item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>-->
+
+        <!--原来 <item name="colorPrimaryDark">#00000000</item>透明效果-->
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 

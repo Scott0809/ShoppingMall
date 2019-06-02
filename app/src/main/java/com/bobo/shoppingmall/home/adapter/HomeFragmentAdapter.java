@@ -170,7 +170,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(mContext,"热销"+position,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,"热销"+position,Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
         }
@@ -205,7 +206,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
         }
@@ -280,7 +282,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             adapter.setOnSeckillRecycleView(new SeckillRecyclerViewAdapter.OnSeckillRecycleView() {
                 @Override
                 public void onItemClick(int position) {
-                    Toast.makeText(mContext,"秒杀"+position,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,"秒杀"+position,Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
 
@@ -517,7 +520,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
                 @Override
                 public void OnBannerClick(int position) {
-                    Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
                     startGoodsInfoActivity();
                 }
             });

@@ -19,7 +19,7 @@ public class WelcomeActivity extends Activity {
 
         setContentView(R.layout.activity_welcome);
         //设置状态栏上的字体为黑色-因为本页面是白色必须设置
-        UtilsStyle.statusBarLightMode(this);
+        UtilsStyle.statusBarLightMode(this,true);
 
         //2秒中进入主页面
         new Handler().postDelayed(new Runnable() {

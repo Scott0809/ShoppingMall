@@ -57,10 +57,15 @@ dependencies {
 
     //ButterKnife
     implementation 'com.jakewharton:butterknife:7.0.1'
+
     //试用了ButterKnife10.1.0 可能用的太早吧 感觉国外的公司还没有国内靠谱 建议使用成熟版本
+
     //细数ButterKnife10.1.0 的bug： https://blog.csdn.net/smile_Running/article/details/88090752
+
     //implementation ('com.jakewharton:butterknife:10.1.0')
+
     //annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
     //RecyclerView 导入依赖有两种方法 https://www.jianshu.com/p/0a4c93b3e71c
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 
@@ -68,15 +73,17 @@ dependencies {
      * 对okhttp3进行封装的开源框架(停止维护不能用作Https请求原项目自带OK HTTP的问题 Leon 使用了okhttp 3.9.0)
      * https://github.com/hongyangAndroid/okhttputils 已将代码 copy 至 httpsutils
      */
+
     //implementation'com.zhy:okhttputils:2.6.2'
 
     //阿里巴巴开源框架fastjson
     implementation 'com.alibaba:fastjson:1.1.71.android'
 
     //    implementation('com.zhy:okhttputils:2.6.2') {
-    //        exclude module: 'okhttp'
-    //    }
 
+    //        exclude module: 'okhttp'
+
+    //    }
     implementation files('libs/okhttp-3.9.0.jar')
 
     //安卓轮播图youth.banner
@@ -84,14 +91,23 @@ dependencies {
     implementation files('libs/glide-3.7.0.jar')
 
     //中间大两边小的 view pager 已将代码 copy 至 magicviewpager
+
     //implementation 'com.zhy:magic-viewpager:1.0.1'
 
     //-------------------jpush ↓--------------------------
+
     //我在控制台推送消息的时候总是 提示：没有满足条件的推送目标 换了原来的版本可以正常推送（已解决）
-    implementation 'cn.jiguang.sdk:jpush:3.3.1'  // 此处以JPush 3.3.1 版本为例。
-    implementation 'cn.jiguang.sdk:jcore:2.0.1'  // 此处以JCore 2.0.1 版本为例。
+    implementation 'cn.jiguang.sdk:jpush:3.3.1'
+
+    // 此处以JPush 3.3.1 版本为例。
+    implementation 'cn.jiguang.sdk:jcore:2.0.1'
+
+    // 此处以JCore 2.0.1 版本为例。
+
     //implementation 'cn.jiguang.sdk:jpush:3.2.0' // 此处以JPush 3.2.0 版本为例。
+
     //implementation 'cn.jiguang.sdk:jcore:1.2.7'// 此处以JPush 3.2.0 版本为例。
+
     //-------------------jpush ↑--------------------------
 
     //app版本更新的第三方框架

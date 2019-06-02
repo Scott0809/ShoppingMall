@@ -72,8 +72,8 @@ public class HomeFragmnet extends BaseFragment {
         Log.e("TAG", "主页面fragment的UI被初始化了");
         View view = View.inflate(mContext, R.layout.fragment_home, null);
 
-        //解决高版本手机状态栏上文字 和 titleBar重叠的问题
-        StBarUtil.setOccupationHeight(getActivity(),view);
+        //美化状态栏
+        statusBarSystemSet(view);
 
         return view;
     }
@@ -190,5 +190,15 @@ public class HomeFragmnet extends BaseFragment {
                 rvHome.scrollToPosition(0);
                 break;
         }
+    }
+
+    //对不同的安卓手机状态栏透明 字体颜色为黑色处理
+    private void statusBarSystemSet(View view) {
+
+        //动态计算statusBar高度 交给各个fragmnet实现因为各个fragment的状态栏颜色不一样
+        StBarUtil.setOccupationHeight(getActivity(),view);
+
+        //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）-因为本页面是白色必须设置
+        UtilsStyle.statusBarLightMode(getActivity(),false);
     }
 }

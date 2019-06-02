@@ -7,6 +7,7 @@
     <View
         android:id="@+id/Occupation"
         android:layout_width="match_parent"
+        android:background="#ed3f3f"
         android:layout_height="0dp"/>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,4 +41,5 @@
             android:textColor="#ffffff"/>
 
     </LinearLayout>
+
 </LinearLayout>

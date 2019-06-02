@@ -15,6 +15,7 @@ import okhttp3.OkHttpClient;
 /**
  * Created by 求知自学网 on 2019/5/11. Copyright © Leon. All rights reserved.
  * Functions: 应用程序类 系统默认单例
+ * 强制更新极光命令 ： leon_orders_mandatory_updates
  */
 public class MyApplication extends Application {
 
