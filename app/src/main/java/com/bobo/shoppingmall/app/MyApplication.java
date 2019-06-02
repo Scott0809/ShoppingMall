@@ -1,6 +1,7 @@
 package com.bobo.shoppingmall.app;
 
 import android.app.Application;
+import android.content.Context;
 
 
 import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
@@ -19,12 +20,16 @@ import okhttp3.OkHttpClient;
  */
 public class MyApplication extends Application {
 
+    private static Context mContext;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         //配置 OkHttpUtils
         //initOkhttpClient();
+
+        mContext = this;
 
         //初始化极光推送
         JPushInterface.init(this);
@@ -46,12 +51,16 @@ public class MyApplication extends Application {
     }
 
     //app被杀了，你监听application的onDestroy方法就行@Override
-        public void onTerminate() {
-            // 程序终止的时候执行
-            //下载成功和失败 是否下载过都要变为false（用户结束程序进程也要改为false）
-            SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
-            super.onTerminate();
-        }
+    public void onTerminate() {
+        // 程序终止的时候执行
+        //下载成功和失败 是否下载过都要变为false（用户结束程序进程也要改为false）
+        SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
+        super.onTerminate();
+    }
 
+    /**获取静态的全局上下文*/
+    public static Context getContext() {
+        return mContext;
+    }
 
 }

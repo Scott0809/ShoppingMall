@@ -22,7 +22,6 @@ import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bumptech.glide.Glide;
 
-import java.io.Serializable;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -243,7 +242,8 @@ public class GoodsInfoActivity extends Activity {
 
         ///销毁webview比较正规的写法
         if (wbGoodInfoMore != null) {
-            wbGoodInfoMore.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            wbGoodInfoMore.loadDataWithBaseURL(null, "", "text/html",
+                    "utf-8", null);
             wbGoodInfoMore.clearHistory();
 
             ((ViewGroup) wbGoodInfoMore.getParent()).removeView(wbGoodInfoMore);
