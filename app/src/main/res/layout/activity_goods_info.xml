@@ -50,17 +50,18 @@
         android:layout_height="1dp"
         android:background="#eee"/>
 
-    <!--framelayout-->
-    <FrameLayout
+    <!--原来是 FrameLayout 我改成线性布局 android:layout_height="0dp" android:layout_weight="1"-->
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp">
 
-        <!--线性布局-->
+        <!--线性布局 android:layout_height="match_parent"-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <com.bobo.shoppingmall.view.ScrollViewContainer
@@ -99,7 +100,7 @@
                             android:layout_height="wrap_content"
                             android:padding="10dp"
                             android:text="预售截止10月15日，预售期为限量礼盒版,包括特制木盒×1、
-                      画集×1、邮票×1套、书签×1、贴纸×1、信封×1、礼盒。"
+画集×1、邮票×1套、书签×1、贴纸×1、信封×1、礼盒。"
                             android:textColor="#767f86"/>
 
                         <TextView
@@ -168,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:padding="10dp"
                             android:text="提示:普通商品享有质量问题7天退货,签收后3个工作日内可换货。
-                          其他特殊商品(如手办)的售后以页面说明为准"
+其他特殊商品(如手办)的售后以页面说明为准"
                             android:textColor="#3c3d40"/>
 
                         <View
@@ -198,10 +199,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!--注意这里 wrap_content 的高度不要写match_parent会闪退-->
                     <WebView
                         android:id="@+id/wb_good_info_more"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="wrap_content"/>
 
                 </ScrollView>
 
@@ -209,12 +211,11 @@
 
         </LinearLayout>
 
-        <!--线性布局-->
+        <!--线性布局 android:layout_gravity="bottom"-->
         <LinearLayout
             android:id="@+id/ll_goods_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:background="#fff"
             android:orientation="horizontal">
 
@@ -270,7 +271,7 @@
         <include layout="@layout/more_layout"
             android:id="@+id/ll_root"/>
 
-    </FrameLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

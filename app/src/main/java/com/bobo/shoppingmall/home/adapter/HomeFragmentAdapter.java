@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.shoppingmall.app.GoodsInfoActivity;
+import com.bobo.shoppingmall.home.bean.GoodsBean;
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
 import com.bobo.shoppingmall.magicviewpager.ScaleInTransformer;
 import com.bumptech.glide.Glide;
@@ -75,6 +76,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
     //用LayoutInflater初始化布局 和 View.inflate()类似
     private LayoutInflater mLayoutInflater;
+
+    public static final String GOODS_BEAN = "goodsBean";
 
     public HomeFragmentAdapter(Context context, ResultBeanData.ResultBean resultBean) {
         this.mContext = context;
@@ -166,20 +169,28 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             this.mContext = mContext;
             this.tv_more_hot = (TextView)itemView.findViewById(R.id.tv_more_hot);
             this.gv_hot = (GridView)itemView.findViewById(R.id.gv_hot);
+        }
+
+        public void setData(final List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
+            //1.有数据2.设置gridview适配器
+            adapter = new HotGridViewAdapter(mContext,hot_info);
+            gv_hot.setAdapter(adapter);
+
             //设置item的点击事件监听
             gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(mContext,"热销"+position,Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    //热销"商品信息类;
+                    ResultBeanData.ResultBean.HotInfoBean hotInfoBean = hot_info.get(position);
+                    //设置商品信息类
+                    GoodsBean goodsBean = new GoodsBean();
+                    goodsBean.setCover_price(hotInfoBean.getCover_price());
+                    goodsBean.setFigure(hotInfoBean.getFigure());
+                    goodsBean.setName(hotInfoBean.getName());
+                    goodsBean.setProduct_id(hotInfoBean.getProduct_id());
+                    startGoodsInfoActivity(goodsBean);
                 }
             });
-        }
-
-        public void setData(List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
-            //1.有数据2.设置gridview适配器
-            adapter = new HotGridViewAdapter(mContext,hot_info);
-            gv_hot.setAdapter(adapter);
         }
     }
 
@@ -202,20 +213,28 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             this.mConext = mContext;
             this.tv_more_recommend = (TextView)itemView.findViewById(R.id.tv_more_recommend);
             this.gv_recommend = (GridView)itemView.findViewById(R.id.gv_recommend);
+        }
+
+        public void setData(final List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
+            //1.有数据了2.设置适配器
+            adapter = new RecommendGridViewAdapter(mConext,recommend_info);
+            gv_recommend.setAdapter(adapter);
 
             gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    //推荐类的信息
+                    ResultBeanData.ResultBean.RecommendInfoBean recommendInfoBean = recommend_info.get(position);
+
+                    //设置商品信息类
+                    GoodsBean goodsBean = new GoodsBean();
+                    goodsBean.setCover_price(recommendInfoBean.getCover_price());
+                    goodsBean.setFigure(recommendInfoBean.getFigure());
+                    goodsBean.setName(recommendInfoBean.getName());
+                    goodsBean.setProduct_id(recommendInfoBean.getProduct_id());
+                    startGoodsInfoActivity(goodsBean);
                 }
             });
-        }
-
-        public void setData(List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
-            //1.有数据了2.设置适配器
-            adapter = new RecommendGridViewAdapter(mConext,recommend_info);
-            gv_recommend.setAdapter(adapter);
         }
     }
 
@@ -268,7 +287,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             rv_seckill = (RecyclerView)itemView.findViewById(R.id.rv_seckill);
         }
 
-        public void setData(ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
+        public void setData(final ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
 
             //1.得到数据了 2.设置数据：文本和RecyclerView的数据
             adapter = new SeckillRecyclerViewAdapter(mContext,seckill_info.getList());
@@ -282,8 +301,17 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             adapter.setOnSeckillRecycleView(new SeckillRecyclerViewAdapter.OnSeckillRecycleView() {
                 @Override
                 public void onItemClick(int position) {
-                    //Toast.makeText(mContext,"秒杀"+position,Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    //秒杀的信息类(对象)
+                    ResultBeanData.ResultBean.SeckillInfoBean.ListBean listBean = seckill_info.getList().
+                            get(position);
+
+                    //设置商品信息类
+                    GoodsBean goodsBean = new GoodsBean();
+                    goodsBean.setCover_price(listBean.getCover_price());
+                    goodsBean.setFigure(listBean.getFigure());
+                    goodsBean.setName(listBean.getName());
+                    goodsBean.setProduct_id(listBean.getProduct_id());
+                    startGoodsInfoActivity(goodsBean);
                 }
             });
 
@@ -520,16 +548,17 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
                 @Override
                 public void OnBannerClick(int position) {
-                    //Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    Toast.makeText(mContext,"点击了"+position,Toast.LENGTH_SHORT).show();
+                    //startGoodsInfoActivity();
                 }
             });
         }
     }
 
     /**启动商品信息列表页面 跳转到商品详情页的方法*/
-    private void startGoodsInfoActivity(){
+    private void startGoodsInfoActivity(GoodsBean goodsBean){
         Intent intent = new Intent(mContext, GoodsInfoActivity.class);
+        intent.putExtra(GOODS_BEAN,goodsBean);
         mContext.startActivity(intent);
     }
 

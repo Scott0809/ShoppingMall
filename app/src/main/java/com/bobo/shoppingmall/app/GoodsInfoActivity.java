@@ -1,9 +1,14 @@
 package com.bobo.shoppingmall.app;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,14 +17,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.home.bean.GoodsBean;
 import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
+import com.bumptech.glide.Glide;
+
+import java.io.Serializable;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import static com.bobo.shoppingmall.home.adapter.HomeFragmentAdapter.GOODS_BEAN;
+import static com.bobo.shoppingmall.utils.Constants.BASE_URL_IMAGE;
 
 public class GoodsInfoActivity extends Activity {
+
+    /**商品详情(本页面)数据对象*/
+    private GoodsBean goodsBean;
 
     @Bind(R.id.ib_good_info_back)
     ImageButton ibGoodInfoBack;
@@ -69,8 +83,76 @@ public class GoodsInfoActivity extends Activity {
         //美化状态栏
         statusBarSystemSet();
 
+        //接收数据
+        goodsBean = (GoodsBean)getIntent().getSerializableExtra(GOODS_BEAN);
+
+        if (goodsBean != null){
+            //设置数据
+            setDataForView(goodsBean);
+        }
+
     }
 
+    private void setDataForView(GoodsBean goodsBean){
+
+        //设置图片
+        Glide.with(GoodsInfoActivity.this).load(BASE_URL_IMAGE+goodsBean.getFigure())
+                .placeholder(R.drawable.occupation).into(ivGoodInfoImage);
+
+        //设置文本(名称)
+        tvGoodInfoName.setText(goodsBean.getName());
+
+        //设置文本(价格)
+        tvGoodInfoPrice.setText("￥"+goodsBean.getCover_price());
+
+        setWebViewData(goodsBean.getProduct_id());
+    }
+
+    private void setWebViewData(String product_id) {
+
+        if (product_id != null){
+
+         //http://www.atguigu.com
+         wbGoodInfoMore.loadUrl("https://github.com/leonInShanghai/ShoppingMall/blob/master" +
+                 "/README.md");
+
+         WebSettings webSettings = wbGoodInfoMore.getSettings();
+
+         //设置允许执行JavaScript
+         webSettings.setJavaScriptEnabled(true);
+
+         //设置允许双击变大变小
+         webSettings.setUseWideViewPort(true);
+
+         //设置优先使用缓存
+         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+
+         // 重定向解決方法: mWebView.setWebViewClient(new WebViewClient());
+         wbGoodInfoMore.setWebViewClient(new WebViewClient());
+
+         // 下面这种写法解决重定向阿福老师写的有问题
+//         wbGoodInfoMore.setWebViewClient(new WebViewClient(){
+//
+//             //低版本手机调用这个方法
+//             @Override
+//             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//
+//                 //返回值时 true的时候 控制去webview打开,为false的时候调用系统浏览器或第三方浏览器
+//                 view.loadUrl(url);
+//                 return true;
+//             }
+//
+//             //高版本的安卓手机会调用这个方法
+//             @Override
+//             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+//                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                     view.loadUrl(request.getUrl().toString());
+//                 }
+//                 return true;
+//             }
+//         });
+        }
+    }
 
     //对不同的安卓手机状态栏透明 字体颜色为黑色处理
     private void statusBarSystemSet() {
@@ -87,7 +169,7 @@ public class GoodsInfoActivity extends Activity {
             tv_good_info_store, R.id.tv_good_info_style, R.id.wb_good_info_more, R.id.
             tv_good_info_callcenter, R.id.tv_good_info_collection, R.id.tv_good_info_cart,
             R.id.btn_good_info_addcart, R.id.ll_goods_root, R.id.tv_more_share, R.id.tv_more_search,
-            R.id.tv_more_home, R.id.btn_more, R.id.activity_goods_info})
+            R.id.tv_more_home, R.id.btn_more})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ib_good_info_back:
@@ -150,9 +232,25 @@ public class GoodsInfoActivity extends Activity {
             case R.id.btn_more:
                 Toast.makeText(GoodsInfoActivity.this,"Goods18",Toast.LENGTH_SHORT).show();
                 break;
-            case R.id.activity_goods_info:
-                Toast.makeText(GoodsInfoActivity.this,"Goods19",Toast.LENGTH_SHORT).show();
-                break;
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        //這裏解決本頁面finish后音樂還在播放的問題
+        //mWebView.destroy();
+
+        ///销毁webview比较正规的写法
+        if (wbGoodInfoMore != null) {
+            wbGoodInfoMore.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            wbGoodInfoMore.clearHistory();
+
+            ((ViewGroup) wbGoodInfoMore.getParent()).removeView(wbGoodInfoMore);
+            wbGoodInfoMore.destroy();
+            wbGoodInfoMore = null;
+        }
+
+        super.onDestroy();
     }
 }
