@@ -20,6 +20,4 @@ public class Constants {
 
     /**(app版本)普通更新持久化保存的key*/
     public static final String UPDATES = "updates2019529";
-
-
 }

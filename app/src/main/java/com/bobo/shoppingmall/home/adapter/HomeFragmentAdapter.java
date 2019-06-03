@@ -25,6 +25,7 @@ import com.bobo.shoppingmall.app.GoodsInfoActivity;
 import com.bobo.shoppingmall.home.bean.GoodsBean;
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
 import com.bobo.shoppingmall.magicviewpager.ScaleInTransformer;
+import com.bobo.shoppingmall.utils.IsNotFastClickUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -176,21 +177,40 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             adapter = new HotGridViewAdapter(mContext,hot_info);
             gv_hot.setAdapter(adapter);
 
-            //设置item的点击事件监听
-            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //设置item的点击事件监听 解决在recycleview中 setOnItemClickListener不响应
+            adapter.setOnHotGridView(new HotGridViewAdapter.OnHotGridView() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //热销"商品信息类;
-                    ResultBeanData.ResultBean.HotInfoBean hotInfoBean = hot_info.get(position);
-                    //设置商品信息类
-                    GoodsBean goodsBean = new GoodsBean();
-                    goodsBean.setCover_price(hotInfoBean.getCover_price());
-                    goodsBean.setFigure(hotInfoBean.getFigure());
-                    goodsBean.setName(hotInfoBean.getName());
-                    goodsBean.setProduct_id(hotInfoBean.getProduct_id());
-                    startGoodsInfoActivity(goodsBean);
+                public void onItemClick(int position) {
+
+                    //加了判断用户是否是第一次点击的工具类（避免用户重复点击开启2个页面）
+                    if (IsNotFastClickUtils.isNotFastClick()){
+                        //热销"商品信息类;
+                        ResultBeanData.ResultBean.HotInfoBean hotInfoBean = hot_info.get(position);
+                        //设置商品信息类
+                        GoodsBean goodsBean = new GoodsBean();
+                        goodsBean.setCover_price(hotInfoBean.getCover_price());
+                        goodsBean.setFigure(hotInfoBean.getFigure());
+                        goodsBean.setName(hotInfoBean.getName());
+                        goodsBean.setProduct_id(hotInfoBean.getProduct_id());
+                        startGoodsInfoActivity(goodsBean);
+                    }
                 }
             });
+            //安卓4.4以上版本滑动屏幕后监听不到 用户的点击事件
+//            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    //热销"商品信息类;
+//                    ResultBeanData.ResultBean.HotInfoBean hotInfoBean = hot_info.get(position);
+//                    //设置商品信息类
+//                    GoodsBean goodsBean = new GoodsBean();
+//                    goodsBean.setCover_price(hotInfoBean.getCover_price());
+//                    goodsBean.setFigure(hotInfoBean.getFigure());
+//                    goodsBean.setName(hotInfoBean.getName());
+//                    goodsBean.setProduct_id(hotInfoBean.getProduct_id());
+//                    startGoodsInfoActivity(goodsBean);
+//                }
+//            });
         }
     }
 

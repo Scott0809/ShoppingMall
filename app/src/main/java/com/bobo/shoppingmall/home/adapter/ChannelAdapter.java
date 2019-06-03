@@ -77,7 +77,7 @@ public class ChannelAdapter extends BaseAdapter{
     }
 
     //源代码中加了修饰符 static class ViewHolder
-    class ViewHolder{
+    static class ViewHolder{
         ImageView iv_icon;
         TextView tv_title;
     }

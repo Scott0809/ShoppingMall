@@ -97,6 +97,7 @@ public class UtilsStyle {
      */
     public static void statusBarLightMode(Activity activity,boolean isDark) {
 
+
          mIsDark = isDark;
 
 
@@ -107,7 +108,13 @@ public class UtilsStyle {
 
             if (MIUISetStatusBarLightMode(activity.getWindow(), true)) {
                 //result = 1;
-                StatusBarLightMode(activity, 1);
+                if (Build.VERSION.SDK_INT >= 21){
+                    //注意高版本的小米手机只能用通用方法处理
+                    StatusBarLightMode(activity, 3);
+                }else {
+                    StatusBarLightMode(activity, 1);
+                }
+                //StatusBarLightMode(activity, 1);
             } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
                 //result = 2;
                 StatusBarLightMode(activity, 2);

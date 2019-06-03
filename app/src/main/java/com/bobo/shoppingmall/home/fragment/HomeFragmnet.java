@@ -128,9 +128,18 @@ public class HomeFragmnet extends BaseFragment {
         resultBean = resultBeanData.getResult();
 
         if (resultBean != null) {//有数据
+
             //设置适配器
-            adapter = new HomeFragmentAdapter(mContext, resultBean);
-            rvHome.setAdapter(adapter);
+            if (adapter == null){
+                adapter = new HomeFragmentAdapter(mContext, resultBean);
+                rvHome.setAdapter(adapter);
+            }else{
+                adapter.notifyDataSetChanged();
+            }
+
+            //原来
+            //adapter = new HomeFragmentAdapter(mContext, resultBean);
+            //rvHome.setAdapter(adapter);
 
             GridLayoutManager manager = new GridLayoutManager(mContext, 1);
 
