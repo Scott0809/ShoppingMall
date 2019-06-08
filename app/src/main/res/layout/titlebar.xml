@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!--设置沉浸式状态栏的 占位view-->
     <View
         android:id="@+id/Occupation"
         android:layout_width="match_parent"

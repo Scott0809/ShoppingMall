@@ -5,7 +5,7 @@ import android.content.Context;
 
 
 import com.bobo.shoppingmall.httpsUtils.OkHttpUtils;
-import com.bobo.shoppingmall.utils.SpUtils;
+import com.bobo.shoppingmall.utils.CacheUtils;
 import com.bobo.shoppingmall.utils.UpdateUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -36,7 +36,7 @@ public class MyApplication extends Application {
         JPushInterface.setDebugMode(true);
 
         //程序重新开始的时候允许校验更新状态
-        SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
+        CacheUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
     }
 
     //配置 OkHttpUtils https://github.com/hongyangAndroid/okhttputils
@@ -54,7 +54,7 @@ public class MyApplication extends Application {
     public void onTerminate() {
         // 程序终止的时候执行
         //下载成功和失败 是否下载过都要变为false（用户结束程序进程也要改为false）
-        SpUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
+        CacheUtils.setBoolean(this, UpdateUtils.DOWNLOADING,false);
         super.onTerminate();
     }
 

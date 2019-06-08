@@ -55,8 +55,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    //ButterKnife
-    implementation 'com.jakewharton:butterknife:7.0.1'
+    //ButterKnife  implementation 2019-06-08 后改为api
+    api 'com.jakewharton:butterknife:7.0.1'
 
     //试用了ButterKnife10.1.0 可能用的太早吧 感觉国外的公司还没有国内靠谱 建议使用成熟版本
 
@@ -112,4 +112,5 @@ dependencies {
 
     //app版本更新的第三方框架
     implementation 'com.github.maning0303:MNUpdateAPK:V1.1.8'
+    implementation 'com.google.code.gson:gson:2.2.4'
 }

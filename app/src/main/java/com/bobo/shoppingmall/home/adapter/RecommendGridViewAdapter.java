@@ -23,6 +23,9 @@ public class RecommendGridViewAdapter extends BaseAdapter {
     private Context mConext;
     private List<ResultBeanData.ResultBean.RecommendInfoBean> datas;
 
+    //传递点击事件的接口
+    private OnRecommendGridView onRecommendGridView;
+
     public RecommendGridViewAdapter(Context mConext, List<ResultBeanData.ResultBean.RecommendInfoBean>
             recommend_info) {
         this.mConext = mConext;
@@ -45,7 +48,7 @@ public class RecommendGridViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
 
@@ -68,6 +71,16 @@ public class RecommendGridViewAdapter extends BaseAdapter {
         viewHolder.tv_name.setText(recommendInfoBean.getName());
         viewHolder.tv_price.setText("￥"+recommendInfoBean.getCover_price());
 
+        //由于gridview自带的点击事件嵌套在recycleview中不能用 自定义点击事件的监听
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onRecommendGridView != null){
+                    onRecommendGridView.onItemClick(position);
+                }
+            }
+        });
+
         return convertView;
     }
 
@@ -78,5 +91,14 @@ public class RecommendGridViewAdapter extends BaseAdapter {
         private TextView tv_name;
         //商品价格
         private TextView tv_price;
+    }
+
+    public interface OnRecommendGridView{
+        void onItemClick(int position);
+    }
+
+    /**GridView自带的点击事件嵌套在recycleView中不能使用 自定义了点击事件的接口*/
+    public void setOnRecommendGridView(OnRecommendGridView onRecommendGridView) {
+        this.onRecommendGridView = onRecommendGridView;
     }
 }

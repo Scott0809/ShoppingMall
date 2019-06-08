@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.home.bean.GoodsBean;
+import com.bobo.shoppingmall.shoppingcart.utils.CartStorage;
 import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bumptech.glide.Glide;
@@ -214,7 +215,7 @@ public class GoodsInfoActivity extends Activity {
                 break;
             case R.id.btn_good_info_addcart:
                 //用户点击了添加到购物车
-                Toast.makeText(GoodsInfoActivity.this,"添加到购物车",Toast.LENGTH_SHORT).show();
+                CartStorage.getInstance().addData(goodsBean);
                 break;
             case R.id.ll_goods_root:
                 Toast.makeText(GoodsInfoActivity.this,"Goods14",Toast.LENGTH_SHORT).show();

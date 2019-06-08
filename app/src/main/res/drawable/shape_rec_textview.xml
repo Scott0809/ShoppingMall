@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <!--rectangle:长方形 矩形的意识-->
+
+    <!--实心的颜色-->
+    <solid android:color="#fff"/>
+
+    <!--边框的宽度-->
+    <stroke
+        android:width="2dp"
+        android:color="#ed3f3f"/>
+
+    <!--圆角度数-->
+    <corners android:radius="5dp"/>
+
+</shape>

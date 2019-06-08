@@ -12,7 +12,7 @@ import android.util.Log;
 import com.bobo.shoppingmall.app.MainActivity;
 import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.LELog;
-import com.bobo.shoppingmall.utils.SpUtils;
+import com.bobo.shoppingmall.utils.CacheUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,10 +86,10 @@ public class MyReceiver extends BroadcastReceiver {
 
                 if (update.equals("leon_orders_mandatory_updates")){
                     //强制更新
-                    SpUtils.setBoolean(context, Constants.MANDATORY_UPDATES,true);
+                    CacheUtils.setBoolean(context, Constants.MANDATORY_UPDATES,true);
                 }else{
                     //非强制更新
-                    SpUtils.setBoolean(context, Constants.UPDATES,true);
+                    CacheUtils.setBoolean(context, Constants.UPDATES,true);
                 }
 
                 processCustomMessage(context, bundle);
@@ -164,7 +164,7 @@ public class MyReceiver extends BroadcastReceiver {
                     //发送广播-收到新极光推送的消息
                    // mLBM.sendBroadcast(new Intent(Constant.RECEIVED_A_NEW_MESSAGE));
                     //保存持久化全局变量 收到信息为true
-                   // SpUtils.setBoolean(context,Constant.IS_NES_MESSAGE,true);
+                   // CacheUtils.setBoolean(context,Constant.IS_NES_MESSAGE,true);
 
                     //数据更新
 //                    InvationInfo invationInfo = new InvationInfo();

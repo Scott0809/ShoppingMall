@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import com.bobo.shoppingmall.weiget.LeAlertDialog;
 import com.bobo.shoppingmall.R;
@@ -29,12 +28,12 @@ public class UpdateUtils {
     public static void checkforUpdate(Context context,Activity activity){
 
         //已经下载了就不要再重复下载了（用户下载的时候home键大返回）
-        if (SpUtils.getBoolean(context,DOWNLOADING)){ return;}
+        if (CacheUtils.getBoolean(context,DOWNLOADING)){ return;}
 
         //是否强制更新
-        boolean mandatoryUpdates = SpUtils.getBoolean(context, Constants.MANDATORY_UPDATES);
+        boolean mandatoryUpdates = CacheUtils.getBoolean(context, Constants.MANDATORY_UPDATES);
         //是否普通更新
-        boolean update = SpUtils.getBoolean(context, Constants.UPDATES);
+        boolean update = CacheUtils.getBoolean(context, Constants.UPDATES);
 
         //优先检查是否强制更新
         if (mandatoryUpdates){
@@ -96,7 +95,7 @@ public class UpdateUtils {
                             public void onStart() {
                                 pd.show();
                                 //downloading = true;
-                                SpUtils.setBoolean(context,DOWNLOADING,true);
+                                CacheUtils.setBoolean(context,DOWNLOADING,true);
                             }
 
                             @Override
@@ -107,17 +106,17 @@ public class UpdateUtils {
                                     @Override
                                     public void onSuccess() {
                                         //更新成功了持久化保存的字段设为false
-                                        SpUtils.setBoolean(context,udateType,false);
+                                        CacheUtils.setBoolean(context,udateType,false);
                                         //下载成功和失败 是否下载过都要变为false
-                                        SpUtils.setBoolean(context,DOWNLOADING,false);
+                                        CacheUtils.setBoolean(context,DOWNLOADING,false);
                                     }
 
                                     @Override
                                     public void onFail(Exception e) {
                                         //更新失败了持久化保存的字段设为true 直到成功才能改变为false
-                                        SpUtils.setBoolean(context,udateType,true);
+                                        CacheUtils.setBoolean(context,udateType,true);
                                         //下载成功和失败 是否下载过都要变为false
-                                        SpUtils.setBoolean(context,DOWNLOADING,false);
+                                        CacheUtils.setBoolean(context,DOWNLOADING,false);
                                     }
                                 });
                             }
@@ -133,9 +132,9 @@ public class UpdateUtils {
                             @Override
                             public void onFail(Exception e) {
                                 //更新失败了持久化保存的字段设为true 直到成功才能改变为false
-                                SpUtils.setBoolean(context,udateType,true);
+                                CacheUtils.setBoolean(context,udateType,true);
                                 //下载成功和失败 是否下载过都要变为false
-                                SpUtils.setBoolean(context,DOWNLOADING,false);
+                                CacheUtils.setBoolean(context,DOWNLOADING,false);
                                 LELog.showLogWithLineNum(5,"更新成功"+Thread.currentThread().getName());
                                 //Toast.makeText(context,"更新成功",Toast.LENGTH_SHORT).show();
                                 pd.dismiss();
@@ -144,7 +143,7 @@ public class UpdateUtils {
                             @Override
                             public void cancle() {
                                 //下载成功和失败 是否下载过都要变为false
-                                SpUtils.setBoolean(context,DOWNLOADING,false);
+                                CacheUtils.setBoolean(context,DOWNLOADING,false);
                                 pd.dismiss();
                             }
                         }).startDownload();

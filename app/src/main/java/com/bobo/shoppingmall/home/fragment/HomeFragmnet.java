@@ -201,13 +201,13 @@ public class HomeFragmnet extends BaseFragment {
         }
     }
 
-    //对不同的安卓手机状态栏透明 字体颜色为黑色处理
+    //对不同的安卓手机状态栏透明 字体颜色为黑色/白色处理
     private void statusBarSystemSet(View view) {
 
         //动态计算statusBar高度 交给各个fragmnet实现因为各个fragment的状态栏颜色不一样
         StBarUtil.setOccupationHeight(getActivity(),view);
 
-        //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）-因为本页面是白色必须设置
+        //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）
         UtilsStyle.statusBarLightMode(getActivity(),false);
     }
 }

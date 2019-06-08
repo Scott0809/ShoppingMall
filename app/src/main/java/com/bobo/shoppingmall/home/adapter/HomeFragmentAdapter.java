@@ -240,9 +240,14 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             adapter = new RecommendGridViewAdapter(mConext,recommend_info);
             gv_recommend.setAdapter(adapter);
 
-            gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //安卓4.4以上版本滑动屏幕后监听不到 用户的点击事件 自定义了点击事件
+            adapter.setOnRecommendGridView(new RecommendGridViewAdapter.OnRecommendGridView() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(int position) {
+
+                    //避免用户重复点击开启2次商品详情activity
+                    if (!IsNotFastClickUtils.isNotFastClick()){return;}
+
                     //推荐类的信息
                     ResultBeanData.ResultBean.RecommendInfoBean recommendInfoBean = recommend_info.get(position);
 
@@ -255,6 +260,22 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
                     startGoodsInfoActivity(goodsBean);
                 }
             });
+            //安卓4.4以上版本滑动屏幕后监听不到 用户的点击事件
+//            gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    //推荐类的信息
+//                    ResultBeanData.ResultBean.RecommendInfoBean recommendInfoBean = recommend_info.get(position);
+//
+//                    //设置商品信息类
+//                    GoodsBean goodsBean = new GoodsBean();
+//                    goodsBean.setCover_price(recommendInfoBean.getCover_price());
+//                    goodsBean.setFigure(recommendInfoBean.getFigure());
+//                    goodsBean.setName(recommendInfoBean.getName());
+//                    goodsBean.setProduct_id(recommendInfoBean.getProduct_id());
+//                    startGoodsInfoActivity(goodsBean);
+//                }
+//            });
         }
     }
 
@@ -479,7 +500,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
              * 注意：② 放在setAdapter后面才起作用
              */
             if (act_info.size() > 1){
-                act_viewpager.setCurrentItem(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % act_info.size());
+                act_viewpager.setCurrentItem(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2
+                        % act_info.size());
             }else {
                 //只有一张图就不要滚动了
                 act_viewpager.setCurrentItem(0);
@@ -499,13 +521,13 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
             this.mContext = context;
             this.gv_channel = (GridView)itemView.findViewById(R.id.gv_channel);
 
-            //设置本item中的GridView 的item的点击事件
-            gv_channel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Toast.makeText(mContext,"点击了频道的"+position,Toast.LENGTH_SHORT).show();
-                }
-            });
+            //设置本item中的GridView 的item的点击事件安卓原生的方法在4.4以上嵌套recycleview中点击事件有问题
+//            gv_channel.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Toast.makeText(mContext,"点击了频道的"+position,Toast.LENGTH_SHORT).show();
+//                }
+//            });
         }
 
         public void setData(List<ResultBeanData.ResultBean.ChannelInfoBean> channel_info) {
@@ -514,6 +536,17 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
 
             //设置适配器
             gv_channel.setAdapter(channelAdapter);
+
+            //由于安卓4.4以上 grid view嵌套在recycleview中滑动后点击事件有问题 自定义处理了
+            channelAdapter.setOnChannelAdapter(new ChannelAdapter.OnChannelAdapter() {
+                @Override
+                public void onItemClick(int position) {
+                    //避免用户重复点击开启2次商品详情activity
+                    if (!IsNotFastClickUtils.isNotFastClick()){return;}
+
+                    Toast.makeText(mContext,"new点击了频道的"+position,Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

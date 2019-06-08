@@ -26,6 +26,9 @@ public class ChannelAdapter extends BaseAdapter{
     //数据源集合
     private List<ResultBeanData.ResultBean.ChannelInfoBean> datas;
 
+    /**自定义点击事件的接口*/
+    private OnChannelAdapter onChannelAdapter;
+
 
     public ChannelAdapter(Context context, List<ResultBeanData.ResultBean.ChannelInfoBean> channel_info) {
         this.mContext = context;
@@ -49,7 +52,7 @@ public class ChannelAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         ViewHolder viewHolder;
 
@@ -73,6 +76,16 @@ public class ChannelAdapter extends BaseAdapter{
         //设置频道的标题
         viewHolder.tv_title.setText(channelInfoBean.getChannel_name());
 
+        //由于安卓4.4以上recycleview嵌套gridview 点击事件传递会有问题 自定义gridview的点击事件
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onChannelAdapter != null){
+                    onChannelAdapter.onItemClick(position);
+                }
+            }
+        });
+
         return convertView;
     }
 
@@ -80,5 +93,14 @@ public class ChannelAdapter extends BaseAdapter{
     static class ViewHolder{
         ImageView iv_icon;
         TextView tv_title;
+    }
+
+    public interface OnChannelAdapter{
+        void onItemClick(int position);
+    }
+
+    /**由于安卓4.4以上recycleview嵌套gridview 点击事件传递会有问题 自定义gridview的点击事件*/
+    public void setOnChannelAdapter(OnChannelAdapter onChannelAdapter) {
+        this.onChannelAdapter = onChannelAdapter;
     }
 }
