@@ -74,21 +74,33 @@ public class MainActivity extends FragmentActivity {
         switch (view.getId()) {
             case R.id.rb_home://主页
                 position = 0;
+                //设置状态栏上的字体为白色
+                UtilsStyle.statusBarLightMode(this,false);
                 break;
             case R.id.rb_type://分类
                 position = 1;
+                //设置状态栏上的字体为黑色
+                UtilsStyle.statusBarLightMode(this,true);
                 break;
             case R.id.rb_community://发现
                 position = 2;
+                //设置状态栏上的字体为黑色
+                UtilsStyle.statusBarLightMode(this,true);
                 break;
             case R.id.rb_cart://购物车
                 position = 3;
+                //设置状态栏上的字体为黑色
+                UtilsStyle.statusBarLightMode(this,true);
                 break;
             case R.id.rb_user://用户中心
                 position = 4;
+                //设置状态栏上的字体为黑色
+                UtilsStyle.statusBarLightMode(this,true);
                 break;
             default://默认主页
                 position = 0;
+                //设置状态栏上的字体为黑色
+                UtilsStyle.statusBarLightMode(this,true);
                 break;
         }
 

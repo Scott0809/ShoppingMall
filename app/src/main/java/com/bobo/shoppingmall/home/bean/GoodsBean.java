@@ -24,6 +24,9 @@ public class GoodsBean implements Serializable {
     /**用户添加到购物车中的商品个数 默认为1*/
     private int number = 1;
 
+    /**商品（在购物车中）是否选中 默认为是*/
+    private boolean isSelected = true;
+
     public int getNumber() {
         return number;
     }
@@ -64,6 +67,14 @@ public class GoodsBean implements Serializable {
         this.product_id = product_id;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
     @Override
     public String toString() {
         return "GoodsBean{" +
@@ -72,6 +83,7 @@ public class GoodsBean implements Serializable {
                 ", name='" + name + '\'' +
                 ", product_id='" + product_id + '\'' +
                 ", number=" + number +
+                ", isSelected=" + isSelected +
                 '}';
     }
 }

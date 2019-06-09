@@ -94,13 +94,13 @@
                     android:textColor="#303235"
                     android:textSize="15sp"/>
 
+                <!-- android:text="￥0.00"-->
                 <TextView
                     android:id="@+id/tv_shopcart_total"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="10dp"
-                    android:text="￥0.00"
                     android:textColor="#ed3f3f"
                     android:textSize="15sp"/>
 

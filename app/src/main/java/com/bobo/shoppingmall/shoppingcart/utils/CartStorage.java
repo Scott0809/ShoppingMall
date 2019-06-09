@@ -103,7 +103,8 @@ public class CartStorage {
 
         if (tempData != null){
             //内存中有了这条数据-购物车中已有了就+1
-            tempData.setName(tempData.getName() + 1);
+            tempData.setNumber(tempData.getNumber() + 1);
+            //tempData.setName(tempData.getName() + 1); 之前这里写错找半天
         }else{
             //内存中没有这条数据-购物车中没有了就添加到购物车
             tempData = goodsBean;

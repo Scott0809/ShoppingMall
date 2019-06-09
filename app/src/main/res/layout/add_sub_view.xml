@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/iv_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/goods_sub_btn"/>
+
+    <!--gravity的中文意思就是”重心“，就是表示view横向和纵向的停靠位置
+　　（1）.android:gravity：是对view控件本身来说的，是用来设置view本身的内容应该显示在view的什么位置，
+     默认值是左侧。也可以用来设置布局中的控件位置
+　　（2）.android:layout_gravity：是相对于包含改元素的父元素来说的，设置该元素在父元素的什么位置；-->
+    <TextView
+        android:textColor="@android:color/background_dark"
+        android:gravity="center"
+        android:id="@+id/tv_value"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="1"
+        android:textSize="20sp"/>
+
+    <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/goods_add_btn"/>
+
+</LinearLayout>
