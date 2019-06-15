@@ -215,9 +215,14 @@ public class GoodsInfoActivity extends Activity {
                 break;
             case R.id.btn_good_info_addcart:
                 //用户点击了添加到购物车
-                CartStorage.getInstance().addData(goodsBean);
-                Toast.makeText(GoodsInfoActivity.this,"添加购物车成功",Toast.LENGTH_SHORT)
-                        .show();
+                if (goodsBean.getNumber() < 8){
+                    Toast.makeText(GoodsInfoActivity.this,"添加购物车成功",Toast.LENGTH_SHORT)
+                            .show();
+                    CartStorage.getInstance().addData(goodsBean);
+                }else{
+                    Toast.makeText(GoodsInfoActivity.this,"库存没有那么多",Toast.LENGTH_SHORT)
+                            .show();
+                }
                 break;
             case R.id.ll_goods_root:
                 Toast.makeText(GoodsInfoActivity.this,"Goods14",Toast.LENGTH_SHORT).show();

@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bobo.shoppingmall.R;
 
 /**
@@ -83,6 +85,8 @@ public class AddSubView extends LinearLayout implements View.OnClickListener {
         //注意这里只能小于不能等于 等于后+1 就大于库存了
         if (value < maxValue){
             value++;
+        }else{
+            Toast.makeText(mContext,"库存没有那么多",Toast.LENGTH_SHORT).show();
         }
 
         // + - 之后都要setvalue
@@ -98,6 +102,8 @@ public class AddSubView extends LinearLayout implements View.OnClickListener {
     private void subNumber(){
         if (value > minValue){
             value--;
+        }else{
+            Toast.makeText(mContext,"商品个数不能小于1",Toast.LENGTH_SHORT).show();
         }
 
         // + - 之后都要setvalue

@@ -1,2 +1,3 @@
 include ':app', ':addsubview'
 include ':ScrollViewContainer'
+include ':alipay_demo'
