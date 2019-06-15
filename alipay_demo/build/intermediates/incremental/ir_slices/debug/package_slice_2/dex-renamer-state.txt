@@ -1,0 +1,4 @@
+#Sat Jun 15 20:18:11 CST 2019
+base.0=D\:\\AndroidCode\\ShoppingMall\\alipay_demo\\build\\intermediates\\transforms\\dexMerger\\debug\\2
+path.0=classes.dex
+renamed.0=classes.dex
