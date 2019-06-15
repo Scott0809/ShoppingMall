@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bobo.shoppingmall.home.bean.GoodsBean;
 
+import java.util.Iterator;
 import java.util.List;
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.shoppingcart.utils.CartStorage;
@@ -34,16 +35,20 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     //从fragment中传递过来的是否选中全部选择框
     private CheckBox checkboxAll;
 
+    //fragment 中传递过来的 完成(删除)状态下的全选
+    private CheckBox cbAll;
+
     /**由于recycleview 没有item的点击事件监听在这回事 自定义接口传递点击事件*/
     private OnItemClickLinstener onItemClickLinstener;
 
 
     public ShoppingCartAdapter(Context context, List<GoodsBean> goodsBeanList, TextView tvShopcartTotal,
-                               CheckBox checkboxAll) {
+                               CheckBox checkboxAll, CheckBox cbAll) {
         this.mContext = context;
         this.datas = goodsBeanList;
         this.tvShopcartTotal = tvShopcartTotal;
         this.checkboxAll = checkboxAll;
+        this.cbAll = cbAll;
 
         //计算总价格
         showTotalPrice();
@@ -94,6 +99,22 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
 
             }
         });
+
+        //cbAll 完成（删除）状态下全选的点击事件
+        cbAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //1.得到状态
+                boolean isCheck = cbAll.isChecked();
+
+                //2.根据状态设置全选和非全选
+                checkAll_none(isCheck);
+
+                //3.删除总价格根本就没有显示不用计算 （重新计算总价格）
+                //showTotalPrice();
+
+            }
+        });
     }
 
     /**设置全选/非全选*/
@@ -109,7 +130,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     }
 
     //4.校验是否全选
-    private void checkAll(){
+    public void checkAll(){
         if (datas != null && datas.size() > 0){
 
             int number = 0;
@@ -121,6 +142,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 if (!goodsBean.isSelected()){
                     //非全选
                     checkboxAll.setChecked(false);
+                    cbAll.setChecked(false);
                 }else{
                     //选中的
                     number++;
@@ -130,12 +152,17 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             if (number == datas.size()){
                 //全选
                 checkboxAll.setChecked(true);
+                cbAll.setChecked(true);
             }
+        }else{
+            //用户根本没有选中任何物品到购物车
+            checkboxAll.setChecked(false);
+            cbAll.setChecked(false);
         }
     }
 
     //显示总价格
-    private void  showTotalPrice(){
+    public void  showTotalPrice(){
         tvShopcartTotal.setText("￥"+getTotalPrice());
     }
 
@@ -219,6 +246,56 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @Override
     public int getItemCount() {
         return datas == null ? 0 : datas.size();
+    }
+
+    //公开的 删除数据的方法
+    public void deleteData() {
+
+        //删除方法一：遍历集合删除
+//        if (datas != null && datas.size() > 0){
+//            for (int i = 0; i < datas.size(); i++) {
+//                //删除选中的数据
+//                GoodsBean goodsBean = datas.get(i);
+//
+//                //判断是选中的数据就删除掉
+//                if (goodsBean.isSelected()){
+//                    //选中的数据(集合也就是内存)移除掉 OnItemClick set选中状态
+//                    datas.remove(goodsBean);
+//
+//                    //删除后最新的数据持久化保存到本地
+//                    CartStorage.getInstance().deleteData(goodsBean);
+//
+//                    //刷新UI视图
+//                    notifyItemRemoved(i);
+//
+//                    //注意移除一条 i 还要减去1
+//                    i--;
+//                }
+//            }
+//        }
+
+        //另外一种删除的方法（迭代器）
+        if (datas != null && datas.size() > 0){
+            for (Iterator iterator = datas.iterator();iterator.hasNext();){
+                GoodsBean goodsBean = (GoodsBean) iterator.next();
+
+                //判断是选中的数据就删除掉
+                if (goodsBean.isSelected()){
+
+                    //根据对象找到列表中的位置
+                    int position = datas.indexOf(goodsBean);
+
+                    //从本地删除
+                    CartStorage.getInstance().deleteData(goodsBean);
+
+                    iterator.remove();
+
+                    //刷新UI视图
+                    notifyItemRemoved(position);
+                }
+            }
+        }
+
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

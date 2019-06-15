@@ -113,6 +113,18 @@ public class ShoppingCartFragmnet extends BaseFragment {
             case R.id.btn_check_out:
                 break;
             case R.id.btn_delete:
+                //用户点击了删除按钮-删除选中的item 校验状态（如果全部被删光了全选按钮要恢复到未选中）
+                adapter.deleteData();
+
+                //校验状态（如果全部被删光了全选按钮要恢复到未选中 chackAll 中的大else 有处理）
+                adapter.checkAll();
+
+                //判断时候删除了所有商品 如果删除了所有商品就显示 空的页面
+                if (adapter.getItemCount() == 0){
+                    //显示空的页面
+                    emptyShoppingCart();
+                }
+
                 break;
             case R.id.btn_collection:
                 break;
@@ -145,10 +157,13 @@ public class ShoppingCartFragmnet extends BaseFragment {
         tvShopcartEdit.setTag(ACTION_EDIT);
         tvShopcartEdit.setText("编辑");
 
-        //2.全部编程非勾选
+        //2.全部变成非勾选
         if (adapter != null){
-            //说有的item都设为已勾选
+            //所有的item都设为已勾选
             adapter.checkAll_none(true);
+            //Leon添加原来的代码写的不够严谨
+            adapter.checkAll();
+            adapter.showTotalPrice();
         }
 
         //3.删除视图隐藏
@@ -156,6 +171,7 @@ public class ShoppingCartFragmnet extends BaseFragment {
 
         //4.结算视图显示
         llCheckAll.setVisibility(View.VISIBLE);
+
     }
 
     private void showDelete(){
@@ -163,10 +179,11 @@ public class ShoppingCartFragmnet extends BaseFragment {
         tvShopcartEdit.setTag(ACTION_COMPLETE);
         tvShopcartEdit.setText("完成");
 
-        //2.全部编程非勾选
+        //2.全部变成非勾选
         if (adapter != null){
-            //说有的item都设为非勾选
+            //所有的item都设为非勾选
             adapter.checkAll_none(false);
+            adapter.checkAll();
         }
 
         //3.删除视图显示
@@ -180,6 +197,14 @@ public class ShoppingCartFragmnet extends BaseFragment {
     public void initData() {
         super.initData();
 
+        //放在的onResume方法中
+        //showData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //解决页面切换数据不刷新的bug
         showData();
     }
 
@@ -189,22 +214,34 @@ public class ShoppingCartFragmnet extends BaseFragment {
         List<GoodsBean> goodsBeanList = CartStorage.getInstance().getAllData();
 
         if (goodsBeanList != null && goodsBeanList.size() > 0){
+
+            //有数据把有数据的布局显示
+            tvShopcartEdit.setVisibility(View.VISIBLE);
+
             //有数据-把没有数据显示的布局隐藏
             llEmptyShopcart.setVisibility(View.GONE);
 
             //设置适配器
-            adapter = new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal,checkboxAll);
+            adapter = new ShoppingCartAdapter(mContext,goodsBeanList,tvShopcartTotal,checkboxAll,cbAll);
             recyclerview.setAdapter(adapter);
 
             //设置布局管理器  recycleview 一定要是设置否者不显示
             recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,
                     false));
-
-
         }else{
             //没有数据-显示数据为空的布局
-            llEmptyShopcart.setVisibility(View.VISIBLE);
+            emptyShoppingCart();
         }
+    }
+
+    //没有数据-显示数据为空的布局
+    private void emptyShoppingCart() {
+        llEmptyShopcart.setVisibility(View.VISIBLE);
+        //隐藏顶部布局右边的 编辑
+        tvShopcartEdit.setVisibility(View.GONE);
+        //隐藏底部的 结算布局 编辑（删除） 和完成 2种状态 结算布局
+        llDelete.setVisibility(View.GONE);//完成 状态下的 结算布局
+        //llCheckAll.setVisibility(View.GONE);//编辑（删除）状态 下的 结算布局
     }
 
     //对不同的安卓手机状态栏透明 字体颜色为黑色处理
