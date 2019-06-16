@@ -58,4 +58,5 @@ public class DensityUtil {
     public static int getScreenHeight() {
         return getScreenRect().height();
     }
+
 }

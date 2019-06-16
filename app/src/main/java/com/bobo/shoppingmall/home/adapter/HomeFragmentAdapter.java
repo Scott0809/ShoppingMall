@@ -111,7 +111,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter {
         }else if (viewType == RECOMMEND){//创建推荐类型ViewHolder
             return new RecommendViewHolder(mContext,mLayoutInflater.inflate(R.layout.recommend_item,
                     null));
-        }else if (viewType == HOT){//创建推荐类型ViewHolder
+        }else if (viewType == HOT){//创建热销类型ViewHolder
             return new HotViewHolder(mContext,mLayoutInflater.inflate(R.layout.hot_item,
                     null));
         }

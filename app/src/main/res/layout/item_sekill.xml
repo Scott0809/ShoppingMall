@@ -22,11 +22,13 @@
         android:textColor="#ff4c4c"
         android:textSize="15sp"/>
 
+    <!--android:layout_width="100dp"-->
     <RelativeLayout
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp">
 
+        <!--android:layout_width="100dp"-->
         <TextView
             android:id="@+id/tv_origin_price"
             android:layout_width="100dp"
@@ -35,7 +37,9 @@
             android:text="￥166.00"
             android:textColor="#9a9a9a"/>
 
+        <!--70dp-->
         <View
+            android:id="@+id/v_middle_line"
             android:layout_width="70dp"
             android:layout_height="1dp"
             android:layout_centerInParent="true"

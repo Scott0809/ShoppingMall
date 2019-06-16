@@ -1,8 +1,11 @@
 package com.bobo.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextPaint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.home.bean.ResultBeanData;
+import com.bobo.shoppingmall.utils.DensityUtil;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -53,6 +57,18 @@ public class SeckillRecyclerViewAdapter extends RecyclerView.Adapter<SeckillRecy
                 top_btn).into(hodler.iv_figure);
         hodler.tv_cover_price.setText(listBean.getCover_price());
         hodler.tv_origin_price.setText(listBean.getOrigin_price());
+
+
+        //动态计算 原价上的中划线的最佳宽度
+        String comingStr = listBean.getOrigin_price() + "占位";
+        Paint pFont = new Paint();
+        Rect rect = new Rect();
+        pFont.getTextBounds(comingStr, 0, comingStr.length() - 1, rect);
+
+        //给原价上的中划线设置宽度
+        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) hodler.middleLine.getLayoutParams();
+        params.width = DensityUtil.dip2px(mContext,(float)rect.width());
+        hodler.middleLine.setLayoutParams(params);
     }
 
     @Override
@@ -70,11 +86,15 @@ public class SeckillRecyclerViewAdapter extends RecyclerView.Adapter<SeckillRecy
         /**原价*/
         private TextView tv_origin_price;
 
+        /**原价下面的中划线*/
+        private View middleLine;
+
         public ViewHodler(@NonNull View itemView) {
             super(itemView);
             iv_figure = (ImageView)itemView.findViewById(R.id.iv_figure);
             tv_cover_price = (TextView)itemView.findViewById(R.id.tv_cover_price);
             tv_origin_price = (TextView)itemView.findViewById(R.id.tv_origin_price);
+            middleLine = (View)itemView.findViewById(R.id.v_middle_line);
 
             //设置点击事件的监听
             itemView.setOnClickListener(new View.OnClickListener() {

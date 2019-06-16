@@ -57,7 +57,7 @@ public class RecommendGridViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.iv_recommend = (ImageView)convertView.findViewById(R.id.iv_recommend);
             viewHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-            viewHolder.tv_price = (TextView)convertView.findViewById(R.id.tv_name);
+            viewHolder.tv_price = (TextView)convertView.findViewById(R.id.tv_price);
             //将viewHolder设置给convertView,绑定起来
             convertView.setTag(viewHolder);
         }else{
