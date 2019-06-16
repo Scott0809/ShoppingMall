@@ -10,14 +10,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
-import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
 import com.bobo.shoppingmall.home.fragment.HomeFragmnet;
 import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet;
 import com.bobo.shoppingmall.type.fragment.TypeFragmnet;
-import com.bobo.shoppingmall.user.fragment.UserFragmnet;
+import com.bobo.shoppingmall.user.fragment.UserFragment;
 
 import java.util.ArrayList;
 
@@ -117,7 +116,7 @@ public class MainActivity extends FragmentActivity {
         fragments.add(new TypeFragmnet());
         fragments.add(new CommunityFragmnet());
         fragments.add(new ShoppingCartFragmnet());
-        fragments.add(new UserFragmnet());
+        fragments.add(new UserFragment());
         //默认选择首页
         rbHome.performClick();
         //rgMain.check(R.id.rb_home);

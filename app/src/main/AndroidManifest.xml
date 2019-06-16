@@ -28,8 +28,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--支付宝的权限↑-->
 
-
-
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -41,7 +39,6 @@
         <activity android:name=".app.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,6 +48,8 @@
             android:name=".app.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity android:name=".app.GoodsInfoActivity"/>
+
+        <activity android:name=".user.activity.MessageCenterActivity"/>
 
         <!-- alipay sdk begin 本地没有安卓客户端的时候加载一个web view-->
         <activity
