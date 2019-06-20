@@ -1,8 +1,6 @@
 package com.bobo.shoppingmall.home.fragment;
 
-import android.app.Activity;
-import android.content.Context;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,10 +25,17 @@ import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UpdateUtils;
 import com.bobo.shoppingmall.utils.UtilsStyle;
+import com.bobo.shoppingmall.weiget.LEloadingView;
+import com.bobo.shoppingmall.weiget.MyPtrClassicFrameLayout;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 import okhttp3.Call;
 
 /**
@@ -48,21 +53,34 @@ public class HomeFragmnet extends BaseFragment {
     @Bind(R.id.ib_top)
     ImageButton ibTop;
 
+    /**第三方下拉刷新控件 已经停止维护*/
+    private PtrClassicFrameLayout mPtrFrame;
 
+    /**
+     * home（本）页面的 adapter
+     */
     private HomeFragmentAdapter adapter;
+
+    /**
+     * 当网络请求时的loading动画
+     */
+    private KProgressHUD mKProgressHUD;
 
     /**
      * 首页数据对象
      */
     private ResultBeanData.ResultBean resultBean;
 
+    /**网络请求成功的变量-默认为true*/
+    private boolean isSuccess = true;
+
     @Override
     public void onResume() {
         super.onResume();
 
         //每次进入首页判断是否有新版本
-        if (getContext() != null && getActivity() != null){
-            UpdateUtils.checkforUpdate(getContext(),getActivity());
+        if (getContext() != null && getActivity() != null) {
+            UpdateUtils.checkforUpdate(getContext(), getActivity());
         }
     }
 
@@ -71,6 +89,7 @@ public class HomeFragmnet extends BaseFragment {
                          @Nullable Bundle savedInstanceState) {
         Log.e("TAG", "主页面fragment的UI被初始化了");
         View view = View.inflate(mContext, R.layout.fragment_home, null);
+        mPtrFrame = (PtrClassicFrameLayout)view.findViewById(R.id.ptr_frame);
 
         //美化状态栏
         statusBarSystemSet(view);
@@ -84,9 +103,19 @@ public class HomeFragmnet extends BaseFragment {
 
         //网络请求
         getDataFromNet();
+
+        //设置下拉刷新
+        setPullToRefres();
     }
 
     private void getDataFromNet() {
+
+        //开始网络请求-开始显示loading
+        mKProgressHUD = KProgressHUD.create(getContext())
+                .setCustomView(new LEloadingView(getContext()))
+                .setLabel("Please wait", Color.GRAY)
+                .setBackgroundColor(Color.WHITE)
+                .show();
 
         //联网请求 老弟商城项目url：https://geekpark.site/atguigu/json/WENJU_STORE.json
         String url = Constants.HOME_URL;
@@ -101,7 +130,15 @@ public class HomeFragmnet extends BaseFragment {
             @Override
             public void onError(Call call, Exception e, int id) {
                 Toast.makeText(getContext(), "请求失败请检查网络", Toast.LENGTH_SHORT).show();
-                //LELog.showLogWithLineNum(5,e.getMessage());
+
+                //结束下拉刷新（无论成功失败本次发起请求已经结束）
+                mPtrFrame.refreshComplete();
+
+                //当前正请求已经结束（无论成功失败本次发起请求已经结束）变量置为true
+                isSuccess = true;
+
+                //loading结束（无论成功失败本次发起请求已经结束）
+                mKProgressHUD.dismiss();
             }
 
             /**
@@ -112,6 +149,16 @@ public class HomeFragmnet extends BaseFragment {
             @Override
             public void onResponse(String response, int id) {
                 //LELog.showLogWithLineNum(5,"请求成功"+response);
+
+                //结束下拉刷新（无论成功失败本次发起请求已经结束）
+                mPtrFrame.refreshComplete();
+
+                //当前正请求已经结束（无论成功失败本次发起请求已经结束）变量置为true
+                isSuccess = true;
+
+                //loading结束（无论成功失败本次发起请求已经结束）
+                mKProgressHUD.dismiss();
+
                 //解析数据
                 processedData(response);
             }
@@ -130,10 +177,10 @@ public class HomeFragmnet extends BaseFragment {
         if (resultBean != null) {//有数据
 
             //设置适配器
-            if (adapter == null){
+            if (adapter == null) {
                 adapter = new HomeFragmentAdapter(mContext, resultBean);
                 rvHome.setAdapter(adapter);
-            }else{
+            } else {
                 adapter.notifyDataSetChanged();
             }
 
@@ -148,10 +195,10 @@ public class HomeFragmnet extends BaseFragment {
                 @Override
                 public int getSpanSize(int position) {
 
-                    if (position <= 3){
+                    if (position <= 3) {
                         //隐藏返回顶部的按钮
                         ibTop.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         //显示返回顶部的按钮
                         ibTop.setVisibility(View.VISIBLE);
                     }
@@ -176,6 +223,7 @@ public class HomeFragmnet extends BaseFragment {
 
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
+
         return rootView;
     }
 
@@ -205,9 +253,39 @@ public class HomeFragmnet extends BaseFragment {
     private void statusBarSystemSet(View view) {
 
         //动态计算statusBar高度 交给各个fragmnet实现因为各个fragment的状态栏颜色不一样
-        StBarUtil.setOccupationHeight(getActivity(),view);
+        StBarUtil.setOccupationHeight(getActivity(), view);
 
         //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）
-        UtilsStyle.statusBarLightMode(getActivity(),false);
+        UtilsStyle.statusBarLightMode(getActivity(), false);
     }
+
+    //Leon增加下拉刷新
+    private void setPullToRefres(){
+        mPtrFrame.disableWhenHorizontalMove(true);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+
+                //判断网络是否请求成功避免网络不好的情况下连续不断的请求
+                if (isSuccess){//如果上次请求成功
+                    //当前正在请求变量置为false
+                    isSuccess = false;
+                    //下拉刷新-网络请求拿到最新的数据
+                    getDataFromNet();
+                }
+            }
+
+            /**
+             * 当对RecycleView列表进行下拉刷新，需要对该方法进行处理
+             */
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                // 默认实现，根据实际情况做改动
+                //return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                //根据自身的情况修改后
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, rvHome, header);
+            }
+        });
+    }
+
 }

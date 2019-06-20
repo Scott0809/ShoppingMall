@@ -1,29 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--添加的下拉刷新控件 ↓ -->
+<!--原来后来继承重写了 in.srain.cube.views.ptr.PtrClassicFrameLayout-->
+<com.bobo.shoppingmall.weiget.MyPtrClassicFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ptr_frame"
+    xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ed3f3f">
+    cube_ptr:ptr_resistance="1.7"
+    cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+    cube_ptr:ptr_duration_to_close="300"
+    cube_ptr:ptr_duration_to_close_header="2000"
+    cube_ptr:ptr_keep_header_when_refresh="true"
+    cube_ptr:ptr_pull_to_fresh="false">
+    <!--app:ptr_resistance="1.7"：设置下拉的阻尼系数，值越大感觉越难下拉
+        ptr_ratio_of_header_height_to_refresh：设置超过头部的多少时，释放可以执行刷新操作
+        ptr_duration_to_close：设置下拉回弹的时间
+        ptr_duration_to_close_header：设置刷新完成，头部回弹时间，注意和前一个进行区别
+        ptr_keep_header_when_refresh：设置刷新的时候是否保持头部
+        ptr_pull_to_fresh：设置下拉过程中执行刷新，我们一般设置为false -->
 
-    <include android:id="@+id/titlebar"
-        layout="@layout/titlebar"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_home"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:layout_below="@id/titlebar" />
+        android:background="#ed3f3f">
 
-    <!--用户划到底部才显示的按钮-->
-    <ImageButton
-        android:id="@+id/ib_top"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/return_top"
-        android:visibility="gone" />
+        <include android:id="@+id/titlebar"
+            layout="@layout/titlebar"/>
 
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_home"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:layout_below="@id/titlebar" />
+
+        <!--用户划到底部才显示的按钮-->
+        <ImageButton
+            android:id="@+id/ib_top"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/return_top"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</com.bobo.shoppingmall.weiget.MyPtrClassicFrameLayout>

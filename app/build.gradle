@@ -113,4 +113,10 @@ dependencies {
     //app版本更新的第三方框架
     implementation 'com.github.maning0303:MNUpdateAPK:V1.1.8'
     implementation 'com.google.code.gson:gson:2.2.4'
+
+    //加载提示框带动画的loding...
+    implementation 'com.kaopiz:kprogresshud:1.2.0'
+
+    //下拉刷新上拉加载更多（停止维护）https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh
+    implementation 'in.srain.cube:ultra-ptr:1.0.11'
 }
