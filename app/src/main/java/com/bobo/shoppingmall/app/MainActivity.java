@@ -1,21 +1,24 @@
 package com.bobo.shoppingmall.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
 import com.bobo.shoppingmall.home.fragment.HomeFragmnet;
 import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet;
-import com.bobo.shoppingmall.type.fragment.TypeFragmnet;
+import com.bobo.shoppingmall.type.fragment.TypeFragment;
 import com.bobo.shoppingmall.user.fragment.UserFragment;
 
 import java.util.ArrayList;
@@ -55,6 +58,9 @@ public class MainActivity extends FragmentActivity {
     //缓存的fragmnet或者上次显示的fragment
     private Fragment tempFragment;
 
+    //广播-用户每次 切换到分类fragment 刷新数据
+    private static LocalBroadcastManager mLBM;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +71,9 @@ public class MainActivity extends FragmentActivity {
 
         //初始化各个fragment
         initFragment();
+
+        //创建一个发送广播的管理者对象
+        mLBM = LocalBroadcastManager.getInstance(this);
     }
 
 
@@ -80,6 +89,7 @@ public class MainActivity extends FragmentActivity {
                 position = 1;
                 //设置状态栏上的字体为黑色
                 UtilsStyle.statusBarLightMode(this,true);
+                mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
                 break;
             case R.id.rb_community://发现
                 position = 2;
@@ -113,7 +123,7 @@ public class MainActivity extends FragmentActivity {
     private void initFragment(){
         fragments = new ArrayList<>();
         fragments.add(new HomeFragmnet());
-        fragments.add(new TypeFragmnet());
+        fragments.add(new TypeFragment());
         fragments.add(new CommunityFragmnet());
         fragments.add(new ShoppingCartFragmnet());
         fragments.add(new UserFragment());

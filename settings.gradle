@@ -1,3 +1,3 @@
-include ':app', ':addsubview'
+include ':app', ':addsubview',":FlycoTabLayout_Lib"
 include ':ScrollViewContainer'
 include ':alipay_demo'

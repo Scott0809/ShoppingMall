@@ -71,7 +71,7 @@ public class HomeFragmnet extends BaseFragment {
      */
     private ResultBeanData.ResultBean resultBean;
 
-    /**网络请求成功的变量-默认为true*/
+    /**网络请求完成的变量-默认为true*/
     private boolean isSuccess = true;
 
     @Override
@@ -255,13 +255,13 @@ public class HomeFragmnet extends BaseFragment {
         //动态计算statusBar高度 交给各个fragmnet实现因为各个fragment的状态栏颜色不一样
         StBarUtil.setOccupationHeight(getActivity(), view);
 
-        //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）
+        //设置状态栏上的字体为白色（OV系手机的状态栏字体是白色）
         UtilsStyle.statusBarLightMode(getActivity(), false);
     }
 
     //Leon增加下拉刷新
     private void setPullToRefres(){
-        mPtrFrame.disableWhenHorizontalMove(true);
+        //mPtrFrame.disableWhenHorizontalMove(true);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {

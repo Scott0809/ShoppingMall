@@ -31,7 +31,7 @@ public class MyReceiver extends BroadcastReceiver {
     //从极光文档复制的时候就带的
     private static final String TAG = "JIGUANG-Example";
 
-    //广播收到后台推送的小消息后改变铃铛你的状态
+    //广播收到后台推送消息后更新版本
     private static LocalBroadcastManager mLBM;
     private static Context context;
 

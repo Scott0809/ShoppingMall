@@ -47,6 +47,15 @@ android {
 //    }
 }
 
+//引入本地libs的aar文件配置第一步
+repositories {
+
+    //引入本地aar文件配置第一步
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -54,6 +63,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //百分比布局分类页面用到的 左边list view 右边 recycleview TypeFragment
+    implementation 'com.android.support:percent:28.0.0'
 
     //ButterKnife  implementation 2019-06-08 后改为api
     api 'com.jakewharton:butterknife:7.0.1'
@@ -119,4 +131,11 @@ dependencies {
 
     //下拉刷新上拉加载更多（停止维护）https://github.com/liaohuqiu/android-Ultra-Pull-To-Refresh
     implementation 'in.srain.cube:ultra-ptr:1.0.11'
+    implementation 'com.android.support:design:28.0.0'
+
+    //第二中配置方法现在用的https://blog.csdn.net/github_27263697/article/details/79196273
+    implementation(name: 'opendanmaku-1.0.0', ext: 'aar')
+
+    //FlycoTabLayout是一个Android TabLayout库,目前有3个TabLayout
+    implementation project(':FlycoTabLayout_Lib')
 }

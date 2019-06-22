@@ -70,6 +70,8 @@ public class Constants {
 
     public static Boolean isBackHome = false;
 
+    public static final String UPDATE_TYPE_DATA = "update_type_data";
+
 
     //客服数据
     public static final String CALL_CENTER = "http://www6.53kf.com/webCompany.php?arg=10007" +
