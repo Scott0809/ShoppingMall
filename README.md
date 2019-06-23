@@ -1,5 +1,8 @@
 # ShoppingMall
 波波商城_MVC</br>
+apk下载地址： https://github.com/leonInShanghai/ShoppingMall/blob/master/app/release/app-release.apk
+</br>
+
 第一个 刘氏自主运行移动端 后端的项目 在尚硅谷的基础上增加了一些自己的元素，开源项目不做任何商业用途，欢迎技术交流。</br>
 
 <div align="center">

@@ -131,7 +131,7 @@ public class GoodsInfoActivity extends Activity {
          //设置允许双击变大变小
          webSettings.setUseWideViewPort(true);
 
-         //设置优先使用缓存
+         //设置优先使用缓存 FIXME：使用这个有不好的地方 过了很久还有缓存
          webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
          // 重定向解決方法: mWebView.setWebViewClient(new WebViewClient());
