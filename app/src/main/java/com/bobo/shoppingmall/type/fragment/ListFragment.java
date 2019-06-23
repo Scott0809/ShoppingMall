@@ -225,7 +225,7 @@ public class ListFragment extends BaseFragment {
                         //接收到切换页面的广播 和onResume都算 处理后改为false 不然会连续不断的调用这里
                         isSwitchPages = false;
                         //Toast.makeText(mContext,"用户上次选中左边"+(lastLeftPoaition+1),
-                                //Toast.LENGTH_SHORT).show();
+                                //  Toast.LENGTH_SHORT).show();
                     }
                     //leon增加用户每一次切换页面增加刷新数据和UI逻辑↑
 
