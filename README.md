@@ -10,7 +10,16 @@ ButterKnife框架 初始化布局 ButterKnife是目前常用的一种依托Java�
  大量的findViewById以及setOnClickListener代码,是注解中相对简单易懂的开源框架。
 
  鳴謝以下開源組織 項目 以及個人：</br>
- 尚硅谷 ButterKnife  OkHttp3 OkHttpUtils  alibaba/fastjson MNUpdateAPK
+ 尚硅谷 ButterKnife  OkHttp3 OkHttpUtils  alibaba/fastjson MNUpdateAPK com.youth.banner Jpush  kprogresshud ultra-ptr</br>
+ opendanmaku  FlycoTabLayout </br>
+
+ <div align="center">
+ <img src="https://github.com/leonInShanghai/ShoppingMall/blob/master/otherPic/1561276376122.gif" >
+ </br>
+ <img src="https://github.com/leonInShanghai/ShoppingMall/blob/master/otherPic/1561276412504.gif" >
+  </div>
+
+
 
 
 
