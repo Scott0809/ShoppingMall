@@ -1,6 +1,9 @@
 package com.bobo.shoppingmall.app;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,6 +16,7 @@ import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.utils.Constants;
+import com.bobo.shoppingmall.utils.LELog;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
@@ -61,6 +65,46 @@ public class MainActivity extends FragmentActivity {
     //广播-用户每次 切换到分类fragment 刷新数据
     private static LocalBroadcastManager mLBM;
 
+    /**外界调用 切换fragment的接口*/
+    private OnSwitchFragment onSwitchFragment;
+
+    //购物车 fragment
+    private ShoppingCartFragmnet shoppingCartFragmnet;
+
+    //是否切换到购物车
+    private boolean isGoingToShoppingCart = false;
+
+
+    //接收到切换了页面（fragment）广播的处理 切换到 购物车fragment
+    private BroadcastReceiver goingToShoppingCart = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            /**
+             * Can not perform this action after onSaveInstanceState
+             * 无法在onSaveInstanceState之后执行此操作
+             * 在GoodsInfoActivity 中直接 finish(); 紧接着就执行下面的方法是不可以的
+             * 要在 activity生命周期 内调用才行 所以定义一个变量 activity “醒来”
+             * onResume() 再调用
+             */
+            //rbCart.performClick();
+            //onViewClicked(rbCart);
+
+            isGoingToShoppingCart = true;
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isGoingToShoppingCart){
+            rbCart.performClick();
+            onViewClicked(rbCart);
+            isGoingToShoppingCart = false;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +118,10 @@ public class MainActivity extends FragmentActivity {
 
         //创建一个发送广播的管理者对象
         mLBM = LocalBroadcastManager.getInstance(this);
+
+        //定义接收广播的方法-接收到后切换到购物车fragment
+        mLBM.registerReceiver(goingToShoppingCart,new IntentFilter(Constants.GOINGTOTHESHOPPINGCART));
+
     }
 
 
@@ -89,6 +137,7 @@ public class MainActivity extends FragmentActivity {
                 position = 1;
                 //设置状态栏上的字体为黑色
                 UtilsStyle.statusBarLightMode(this,true);
+                //发送切换了fragment的广播
                 mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
                 break;
             case R.id.rb_community://发现
@@ -125,11 +174,16 @@ public class MainActivity extends FragmentActivity {
         fragments.add(new HomeFragmnet());
         fragments.add(new TypeFragment());
         fragments.add(new CommunityFragmnet());
-        fragments.add(new ShoppingCartFragmnet());
+        shoppingCartFragmnet = new ShoppingCartFragmnet();
+        fragments.add(shoppingCartFragmnet);
+        //fragments.add(new ShoppingCartFragmnet());
         fragments.add(new UserFragment());
         //默认选择首页
         rbHome.performClick();
         //rgMain.check(R.id.rb_home);
+
+        //2019-6-23增加去逛逛跳转到首页
+        initFragmentSwithListener();
     }
 
     private BaseFragment getFragment(int position){
@@ -169,7 +223,35 @@ public class MainActivity extends FragmentActivity {
     }
 
 
+    //2019-6-23增加去逛逛跳转到首页
+    private void initFragmentSwithListener(){
 
+        //购物车跳转 到指定的fragment 首页
+        shoppingCartFragmnet.setOnSwitchFragment(new OnSwitchFragment() {
+            @Override
+            public void PerformClickRadioButton(int i) {
+                switch (i){
+                    case 0://跳转到首页
+                        rbHome.performClick();
+                        onViewClicked(rbHome);
+                        break;
+                    case 2://跳转到购物车
+                        rbCart.performClick();
+                        onViewClicked(rbCart);
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        //注册的广播（接收方）一定要关掉
+        mLBM.unregisterReceiver(goingToShoppingCart);
+
+        super.onDestroy();
+    }
 }
 
 

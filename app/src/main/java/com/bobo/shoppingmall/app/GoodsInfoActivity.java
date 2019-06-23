@@ -1,8 +1,10 @@
 package com.bobo.shoppingmall.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.home.bean.GoodsBean;
 import com.bobo.shoppingmall.shoppingcart.utils.CartStorage;
+import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.StBarUtil;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bumptech.glide.Glide;
@@ -73,6 +76,10 @@ public class GoodsInfoActivity extends Activity {
     Button btnMore;
     @Bind(R.id.activity_goods_info)
     LinearLayout activityGoodsInfo;
+
+
+    //广播- 发广播给宿主activity 让它切换到购物车 fragment
+    private static LocalBroadcastManager mLBM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,8 +217,12 @@ public class GoodsInfoActivity extends Activity {
                 Toast.makeText(GoodsInfoActivity.this,"Goods11",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_good_info_cart:
-                //用户点击了购物车
-                Toast.makeText(GoodsInfoActivity.this,"Goods12",Toast.LENGTH_SHORT).show();
+                //关闭当前页面
+                finish();
+                //创建一个发送广播的管理者对象 - 用于通知宿主activity切换到 购物车
+                mLBM = LocalBroadcastManager.getInstance(this);
+                //发送要去购物车的广播
+                mLBM.sendBroadcast(new Intent(Constants.GOINGTOTHESHOPPINGCART));
                 break;
             case R.id.btn_good_info_addcart:
                 //用户点击了添加到购物车
@@ -261,4 +272,6 @@ public class GoodsInfoActivity extends Activity {
 
         super.onDestroy();
     }
+
+
 }

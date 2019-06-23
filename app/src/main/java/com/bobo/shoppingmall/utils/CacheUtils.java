@@ -54,6 +54,13 @@ public class CacheUtils {
         return result;
     }
 
+    /**獲取本地持久化存儲的Int類型  有默认值*/
+    public static int getIntHaveDefaultValue(Context context,String key,int defaultValue){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        int result = sp.getInt(key,defaultValue);
+        return result;
+    }
+
     /**本地持久化存儲Long類型*/
     public static void setLong(Context context,String key,long value){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);

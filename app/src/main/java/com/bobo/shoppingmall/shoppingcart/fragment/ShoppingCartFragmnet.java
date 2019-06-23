@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.app.OnSwitchFragment;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.home.bean.GoodsBean;
 import com.bobo.shoppingmall.shoppingcart.adapter.ShoppingCartAdapter;
@@ -89,6 +90,9 @@ public class ShoppingCartFragmnet extends BaseFragment {
 
     //完成状态
     private static final int ACTION_COMPLETE = 2;
+
+    /**外界调用 切换fragment的接口*/
+    private OnSwitchFragment onSwitchFragment;
 
 
     @Override
@@ -159,11 +163,17 @@ public class ShoppingCartFragmnet extends BaseFragment {
                 break;
             case R.id.iv_empty:
                 //用户点击了空页面的logo
-
+                if (onSwitchFragment != null){
+                    //0 代表首页 fragment
+                    onSwitchFragment.PerformClickRadioButton(0);
+                }
                 break;
             case R.id.tv_empty_cart_tobuy:
                 //用户点击了空页面的textview文本去逛逛
-
+                if (onSwitchFragment != null){
+                    //0 代表首页 fragment
+                    onSwitchFragment.PerformClickRadioButton(0);
+                }
                 break;
             case R.id.tv_shopcart_edit:
                 //用户点击了右上角的编辑
@@ -284,6 +294,11 @@ public class ShoppingCartFragmnet extends BaseFragment {
 
         //设置状态栏上的字体为黑色（OV系手机的状态栏字体是白色）-因为本页面是白色必须设置
         UtilsStyle.statusBarLightMode(getActivity(),true);
+    }
+
+    //实现点击跳转到首页的接口去逛逛
+    public void setOnSwitchFragment(OnSwitchFragment onSwitchFragment) {
+        this.onSwitchFragment = onSwitchFragment;
     }
 
 
@@ -480,6 +495,7 @@ public class ShoppingCartFragmnet extends BaseFragment {
     private String getSignType() {
         return "sign_type=\"RSA\"";
     }
+
 
 }
 

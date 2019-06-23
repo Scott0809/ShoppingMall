@@ -70,7 +70,11 @@ public class Constants {
 
     public static Boolean isBackHome = false;
 
+    //切换至分类要刷新数据的广播的key
     public static final String UPDATE_TYPE_DATA = "update_type_data";
+
+    //要去购物车的广播key
+    public static final String GOINGTOTHESHOPPINGCART = "goingToTheShoppingCart";
 
 
     //客服数据
