@@ -88,6 +88,10 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         checkboxAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //判断没有商品点击就无效
+                if (getItemCount() == 0){ return;}
+
                 //1.得到状态
                 boolean isCheck = checkboxAll.isChecked();
 

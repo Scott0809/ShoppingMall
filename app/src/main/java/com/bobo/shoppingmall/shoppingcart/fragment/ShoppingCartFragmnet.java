@@ -141,11 +141,19 @@ public class ShoppingCartFragmnet extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_check_out:
+
+                //判断没有商品点击就无效
+                if (adapter == null || adapter.getItemCount() == 0){ return; }
+
                 //用户点击了结算按钮-pay(view) 支付宝dome中的支付方法
                 pay(view);
                 Toast.makeText(mContext,"点击了结算按钮",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_delete:
+
+                //判断没有商品点击就无效
+                if (adapter.getItemCount() == 0){ return; }
+
                 //用户点击了删除按钮-删除选中的item 校验状态（如果全部被删光了全选按钮要恢复到未选中）
                 adapter.deleteData();
 
