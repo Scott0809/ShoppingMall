@@ -18,6 +18,7 @@ public abstract class BaseFragment extends Fragment {
     protected Context mContext;
 
 
+
     /**
      * 当该类被系统创建的时候被回调
      * @param savedInstanceState

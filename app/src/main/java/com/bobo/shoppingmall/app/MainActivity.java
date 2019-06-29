@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
@@ -59,8 +60,11 @@ public class MainActivity extends FragmentActivity {
     //用户选择RadioGroup 上按钮位置
     private int position = 0;
 
-    //缓存的fragmnet或者上次显示的fragment
-    private Fragment tempFragment;
+    //切换页面fragment重叠的bug 2019-6-29修改为 默认=null
+    //private Fragment tempFragment;
+
+    //缓存的fragmnet或者上次显示的fragment 默认=null
+    private Fragment tempFragment = null;
 
     //广播-用户每次 切换到分类fragment 刷新数据
     private static LocalBroadcastManager mLBM;
@@ -164,8 +168,10 @@ public class MainActivity extends FragmentActivity {
 
         //根据位置去取不同的fragment
         BaseFragment baseFragment = getFragment(position);
+
         //切换fragment的方法
         switchFragment(tempFragment,baseFragment);
+
     }
 
     //初始化各个fragment
