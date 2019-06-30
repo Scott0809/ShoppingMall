@@ -78,6 +78,8 @@ public class MainActivity extends FragmentActivity {
     //是否切换到购物车
     private boolean isGoingToShoppingCart = false;
 
+    private FragmentTransaction transaction;
+
 
     //接收到切换了页面（fragment）广播的处理 切换到 购物车fragment
     private BroadcastReceiver goingToShoppingCart = new BroadcastReceiver() {
@@ -209,7 +211,8 @@ public class MainActivity extends FragmentActivity {
         if (tempFragment != nextFragment){
             tempFragment = nextFragment;
             if (nextFragment != null){
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                //FragmentTransaction
+                transaction = getSupportFragmentManager().beginTransaction();
                 //判断nextFragmmnet是否添加
                 if (!nextFragment.isAdded()){//如果没有添加过添加
                     if (fromFragment != null){
@@ -255,7 +258,8 @@ public class MainActivity extends FragmentActivity {
 
         //注册的广播（接收方）一定要关掉
         mLBM.unregisterReceiver(goingToShoppingCart);
-
+        //2019-6-30
+        transaction.remove(tempFragment);
         super.onDestroy();
     }
 }
