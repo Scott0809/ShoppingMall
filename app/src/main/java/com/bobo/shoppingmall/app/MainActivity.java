@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.utils.Constants;
@@ -78,7 +79,12 @@ public class MainActivity extends FragmentActivity {
     //是否切换到购物车
     private boolean isGoingToShoppingCart = false;
 
+    //onDestroy 中移除 解决 fragment 重叠bug
     private FragmentTransaction transaction;
+    private CommunityFragmnet communityFragmnet;
+    private TypeFragment typeFragment;
+    private HomeFragmnet homeFragmnet;
+    private UserFragment userFragment;
 
 
     //接收到切换了页面（fragment）广播的处理 切换到 购物车fragment
@@ -179,12 +185,16 @@ public class MainActivity extends FragmentActivity {
     //初始化各个fragment
     private void initFragment(){
         fragments = new ArrayList<>();
-        fragments.add(new HomeFragmnet());
-        fragments.add(new TypeFragment());
-        fragments.add(new CommunityFragmnet());
+        homeFragmnet = new HomeFragmnet();
+        fragments.add(homeFragmnet);
+        typeFragment = new TypeFragment();
+        fragments.add(typeFragment);
+        communityFragmnet = new CommunityFragmnet();
+        fragments.add(communityFragmnet);
         shoppingCartFragmnet = new ShoppingCartFragmnet();
         fragments.add(shoppingCartFragmnet);
         //fragments.add(new ShoppingCartFragmnet());
+        userFragment = new UserFragment();
         fragments.add(new UserFragment());
         //默认选择首页
         rbHome.performClick();
@@ -216,14 +226,20 @@ public class MainActivity extends FragmentActivity {
                 //判断nextFragmmnet是否添加
                 if (!nextFragment.isAdded()){//如果没有添加过添加
                     if (fromFragment != null){
+                        //原来
                         transaction.hide(fromFragment);
+                        //2019-7-1
+                        //transaction.remove(tempFragment);
                     }
                     //添加Fragment
                     transaction.add(R.id.frameLayout,nextFragment).commit();
                 }else {//如果添加过直接show
                     //隐藏当前Fragment
                     if (fromFragment != null) {
+                        //原来
                         transaction.hide(fromFragment);
+                        //2019-7-1
+                        //transaction.remove(tempFragment);
                     }
                     transaction.show(nextFragment).commit();
                 }
@@ -258,8 +274,13 @@ public class MainActivity extends FragmentActivity {
 
         //注册的广播（接收方）一定要关掉
         mLBM.unregisterReceiver(goingToShoppingCart);
-        //2019-6-30
-        transaction.remove(tempFragment);
+        //2019-6-30 解决fragment重叠的bug
+        transaction.remove(homeFragmnet);
+        transaction.remove(typeFragment);
+        transaction.remove(communityFragmnet);
+        transaction.remove(shoppingCartFragmnet);
+        transaction.remove(userFragment);
+       // Toast.makeText(MainActivity.this,"解决fragment重叠的bug",Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
 }
