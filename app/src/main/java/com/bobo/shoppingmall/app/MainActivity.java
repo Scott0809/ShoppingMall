@@ -195,7 +195,7 @@ public class MainActivity extends FragmentActivity {
         fragments.add(shoppingCartFragmnet);
         //fragments.add(new ShoppingCartFragmnet());
         userFragment = new UserFragment();
-        fragments.add(new UserFragment());
+        fragments.add(userFragment);
         //默认选择首页
         rbHome.performClick();
         //rgMain.check(R.id.rb_home);
