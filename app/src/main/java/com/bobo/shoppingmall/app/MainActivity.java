@@ -7,27 +7,25 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.home.fragment.HomeFragment;
 import com.bobo.shoppingmall.utils.Constants;
-import com.bobo.shoppingmall.utils.LELog;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
 import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
-import com.bobo.shoppingmall.home.fragment.HomeFragmnet;
 import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet;
 import com.bobo.shoppingmall.type.fragment.TypeFragment;
 import com.bobo.shoppingmall.user.fragment.UserFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -83,7 +81,7 @@ public class MainActivity extends FragmentActivity {
     private FragmentTransaction transaction;
     private CommunityFragmnet communityFragmnet;
     private TypeFragment typeFragment;
-    private HomeFragmnet homeFragmnet;
+    private HomeFragment homeFragment;
     private UserFragment userFragment;
 
 
@@ -175,18 +173,20 @@ public class MainActivity extends FragmentActivity {
         }
 
         //根据位置去取不同的fragment
-        BaseFragment baseFragment = getFragment(position);
+        //BaseFragment baseFragment = getFragment(position);
 
         //切换fragment的方法
-        switchFragment(tempFragment,baseFragment);
+        //switchFragment(tempFragment,baseFragment);
+
+        onNavigationItemSelected(position);
 
     }
 
     //初始化各个fragment
     private void initFragment(){
         fragments = new ArrayList<>();
-        homeFragmnet = new HomeFragmnet();
-        fragments.add(homeFragmnet);
+        homeFragment = new HomeFragment();
+        fragments.add(homeFragment);
         typeFragment = new TypeFragment();
         fragments.add(typeFragment);
         communityFragmnet = new CommunityFragmnet();
@@ -201,7 +201,7 @@ public class MainActivity extends FragmentActivity {
         //rgMain.check(R.id.rb_home);
 
         //2019-6-23增加去逛逛跳转到首页
-        initFragmentSwithListener();
+        //initFragmentSwithListener();
     }
 
     private BaseFragment getFragment(int position){
@@ -213,7 +213,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     /**
-     * 切换Fragmengt的方法
+     * 切换Fragmengt的方法这种写法有fragment重叠的bug  onNavigationItemSelected代替
      * @param fromFragment 第一个参数：上次显示的fragment
      * @param nextFragment 第二个参数：当前正要显示的fragment
      */
@@ -247,7 +247,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-
     //2019-6-23增加去逛逛跳转到首页
     private void initFragmentSwithListener(){
 
@@ -275,14 +274,90 @@ public class MainActivity extends FragmentActivity {
         //注册的广播（接收方）一定要关掉
         mLBM.unregisterReceiver(goingToShoppingCart);
         //2019-6-30 解决fragment重叠的bug
-        transaction.remove(homeFragmnet);
-        transaction.remove(typeFragment);
-        transaction.remove(communityFragmnet);
-        transaction.remove(shoppingCartFragmnet);
-        transaction.remove(userFragment);
+//        transaction.remove(homeFragmnet);
+//        transaction.remove(typeFragment);
+//        transaction.remove(communityFragmnet);
+//        transaction.remove(shoppingCartFragmnet);
+//        transaction.remove(userFragment);
        // Toast.makeText(MainActivity.this,"解决fragment重叠的bug",Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
+
+
+    //------------------https://blog.csdn.net/yuzhiqiang_1993/article/details/75014591---------------------
+    /*添加fragment*/
+    private void addFragment(Fragment fragment) {
+
+        /*判断该fragment是否已经被添加过  如果没有被添加  则添加*/
+        if (!fragment.isAdded()) {
+            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment).commit();
+            /*添加到 fragmentList*/
+            //fragmentList.add(fragment);
+        }
+
+
+    }
+
+
+    /*显示fragment*/
+    private void showFragment(Fragment fragment) {
+
+        for (Fragment frag : fragments) {
+            if (frag != fragment) {
+                /*先隐藏其他fragment*/
+                getSupportFragmentManager().beginTransaction().hide(frag).commit();
+            }
+        }
+        getSupportFragmentManager().beginTransaction().show(fragment).commit();
+    }
+
+
+    //根据索引 创建fragment 并 显示
+    public void onNavigationItemSelected(int item) {
+
+        switch (item) {
+            case 0:
+                if (homeFragment == null) {
+                    homeFragment = (HomeFragment) fragments.get(item);
+                }
+                addFragment(homeFragment);
+                showFragment(homeFragment);
+                break;
+
+            case 1:
+                if (typeFragment == null) {
+                    typeFragment = (TypeFragment) fragments.get(item);
+                }
+                addFragment(typeFragment);
+                showFragment(typeFragment);
+                break;
+            case 2:
+                if (communityFragmnet == null) {
+                    communityFragmnet = (CommunityFragmnet)fragments.get(item);
+                }
+                addFragment(communityFragmnet);
+                showFragment(communityFragmnet);
+                break;
+            case 3:
+                if (shoppingCartFragmnet == null) {
+                    shoppingCartFragmnet = (ShoppingCartFragmnet)fragments.get(item);
+                }
+                //2019-6-23增加去逛逛跳转到首页
+                initFragmentSwithListener();
+                addFragment(shoppingCartFragmnet);
+                showFragment(shoppingCartFragmnet);
+                break;
+            case 4:
+                if (userFragment == null) {
+                    userFragment = (UserFragment)fragments.get(item);
+                }
+                addFragment(userFragment);
+                showFragment(userFragment);
+                break;
+        }
+    }
+
+
 }
 
 

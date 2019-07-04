@@ -1,0 +1,284 @@
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import com.bobo.shoppingmall.R;
+import com.bobo.shoppingmall.utils.Constants;
+import com.bobo.shoppingmall.utils.LELog;
+import com.bobo.shoppingmall.utils.UtilsStyle;
+import com.bobo.shoppingmall.base.BaseFragment;
+import com.bobo.shoppingmall.community.fragment.CommunityFragmnet;
+import com.bobo.shoppingmall.home.fragment.HomeFragmnet;
+import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet;
+import com.bobo.shoppingmall.type.fragment.TypeFragment;
+import com.bobo.shoppingmall.user.fragment.UserFragment;
+
+import java.util.ArrayList;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+
+/**
+ * Created by ��֪��ѧ�� on 2019/5/5 Copyright ? Leon. All rights reserved.
+ * Functions: ��ҳ�� �� fragment�� activity  FragmentActivity  ��AppCompatActivity Ҳ��ʵ��
+ */
+public class MainActivity extends FragmentActivity {
+
+    @Bind(R.id.frameLayout)
+    FrameLayout frameLayout;
+    @Bind(R.id.rb_home)
+    RadioButton rbHome;
+    @Bind(R.id.rb_type)
+    RadioButton rbType;
+    @Bind(R.id.rb_community)
+    RadioButton rbCommunity;
+    @Bind(R.id.rb_cart)
+    RadioButton rbCart;
+    @Bind(R.id.rb_user)
+    RadioButton rbUser;
+    @Bind(R.id.rg_main)
+    RadioGroup rgMain;
+
+    /**�洢����fragment �ļ���*/
+    private ArrayList<BaseFragment> fragments;
+
+    //�û�ѡ��RadioGroup �ϰ�ťλ��
+    private int position = 0;
+
+    //�л�ҳ��fragment�ص���bug 2019-6-29�޸�Ϊ Ĭ��=null
+    //private Fragment tempFragment;
+
+    //�����fragmnet�����ϴ���ʾ��fragment Ĭ��=null
+    private Fragment tempFragment = null;
+
+    //�㲥-�û�ÿ�� �л�������fragment ˢ������
+    private static LocalBroadcastManager mLBM;
+
+    /**������ �л�fragment�Ľӿ�*/
+    private OnSwitchFragment onSwitchFragment;
+
+    //���ﳵ fragment
+    private ShoppingCartFragmnet shoppingCartFragmnet;
+
+    //�Ƿ��л������ﳵ
+    private boolean isGoingToShoppingCart = false;
+
+    //onDestroy ���Ƴ� ��� fragment �ص�bug
+    private FragmentTransaction transaction;
+    private CommunityFragmnet communityFragmnet;
+    private TypeFragment typeFragment;
+    private HomeFragmnet homeFragmnet;
+    private UserFragment userFragment;
+
+
+    //���յ��л���ҳ�棨fragment���㲥�Ĵ��� �л��� ���ﳵfragment
+    private BroadcastReceiver goingToShoppingCart = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            /**
+             * Can not perform this action after onSaveInstanceState
+             * �޷���onSaveInstanceState֮��ִ�д˲���
+             * ��GoodsInfoActivity ��ֱ�� finish(); �����ž�ִ������ķ����ǲ����Ե�
+             * Ҫ�� activity�������� �ڵ��ò��� ���Զ���һ������ activity ��������
+             * onResume() �ٵ���
+             */
+            //rbCart.performClick();
+            //onViewClicked(rbCart);
+
+            isGoingToShoppingCart = true;
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isGoingToShoppingCart){
+            rbCart.performClick();
+            onViewClicked(rbCart);
+            isGoingToShoppingCart = false;
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        //ButterKnife�͵�ǰactivity��
+        ButterKnife.bind(this);
+
+        //��ʼ������fragment
+        initFragment();
+
+        //����һ�����͹㲥�Ĺ����߶���
+        mLBM = LocalBroadcastManager.getInstance(this);
+
+        //������չ㲥�ķ���-���յ����л������ﳵfragment
+        mLBM.registerReceiver(goingToShoppingCart,new IntentFilter(Constants.GOINGTOTHESHOPPINGCART));
+
+    }
+
+
+    @OnClick({R.id.rb_home, R.id.rb_type, R.id.rb_community, R.id.rb_cart, R.id.rb_user, R.id.rg_main})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.rb_home://��ҳ
+                position = 0;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,false);
+                break;
+            case R.id.rb_type://����
+                position = 1;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,true);
+                //�����л���fragment�Ĺ㲥
+                mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
+                break;
+            case R.id.rb_community://����
+                position = 2;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,true);
+                break;
+            case R.id.rb_cart://���ﳵ
+                position = 3;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,true);
+                break;
+            case R.id.rb_user://�û�����
+                position = 4;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,true);
+                break;
+            default://Ĭ����ҳ
+                position = 0;
+                //����״̬���ϵ�����Ϊ��ɫ
+                UtilsStyle.statusBarLightMode(this,true);
+                break;
+        }
+
+        //����λ��ȥȡ��ͬ��fragment
+        BaseFragment baseFragment = getFragment(position);
+
+        //�л�fragment�ķ���
+        switchFragment(tempFragment,baseFragment);
+
+    }
+
+    //��ʼ������fragment
+    private void initFragment(){
+        fragments = new ArrayList<>();
+        homeFragmnet = new HomeFragmnet();
+        fragments.add(homeFragmnet);
+        typeFragment = new TypeFragment();
+        fragments.add(typeFragment);
+        communityFragmnet = new CommunityFragmnet();
+        fragments.add(communityFragmnet);
+        shoppingCartFragmnet = new ShoppingCartFragmnet();
+        fragments.add(shoppingCartFragmnet);
+        //fragments.add(new ShoppingCartFragmnet());
+        userFragment = new UserFragment();
+        fragments.add(new UserFragment());
+        //Ĭ��ѡ����ҳ
+        rbHome.performClick();
+        //rgMain.check(R.id.rb_home);
+
+        //2019-6-23����ȥ�����ת����ҳ
+        initFragmentSwithListener();
+    }
+
+    private BaseFragment getFragment(int position){
+        if (fragments != null && fragments.size() > position){
+            BaseFragment baseFragment = fragments.get(position);
+            return baseFragment;
+        }
+        return null;
+    }
+
+    /**
+     * �л�Fragmengt�ķ���
+     * @param fromFragment ��һ���������ϴ���ʾ��fragment
+     * @param nextFragment �ڶ�����������ǰ��Ҫ��ʾ��fragment
+     */
+    private void switchFragment(Fragment fromFragment,BaseFragment nextFragment){
+        if (tempFragment != nextFragment){
+            tempFragment = nextFragment;
+            if (nextFragment != null){
+                //FragmentTransaction
+                transaction = getSupportFragmentManager().beginTransaction();
+                //�ж�nextFragmmnet�Ƿ����
+                if (!nextFragment.isAdded()){//���û����ӹ����
+                    if (fromFragment != null){
+                        //ԭ��
+                        transaction.hide(fromFragment);
+                        //2019-7-1
+                        //transaction.remove(tempFragment);
+                    }
+                    //���Fragment
+                    transaction.add(R.id.frameLayout,nextFragment).commit();
+                }else {//�����ӹ�ֱ��show
+                    //���ص�ǰFragment
+                    if (fromFragment != null) {
+                        //ԭ��
+                        transaction.hide(fromFragment);
+                        //2019-7-1
+                        //transaction.remove(tempFragment);
+                    }
+                    transaction.show(nextFragment).commit();
+                }
+            }
+        }
+    }
+
+
+    //2019-6-23����ȥ�����ת����ҳ
+    private void initFragmentSwithListener(){
+
+        //���ﳵ��ת ��ָ����fragment ��ҳ
+        shoppingCartFragmnet.setOnSwitchFragment(new OnSwitchFragment() {
+            @Override
+            public void PerformClickRadioButton(int i) {
+                switch (i){
+                    case 0://��ת����ҳ
+                        rbHome.performClick();
+                        onViewClicked(rbHome);
+                        break;
+                    case 2://��ת�����ﳵ
+                        rbCart.performClick();
+                        onViewClicked(rbCart);
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        //ע��Ĺ㲥�����շ���һ��Ҫ�ص�
+        mLBM.unregisterReceiver(goingToShoppingCart);
+        //2019-6-30 ���fragment�ص���bug
+        transaction.remove(homeFragmnet);
+        transaction.remove(typeFragment);
+        transaction.remove(communityFragmnet);
+        transaction.remove(shoppingCartFragmnet);
+        transaction.remove(userFragment);
+       // Toast.makeText(MainActivity.this,"���fragment�ص���bug",Toast.LENGTH_SHORT).show();
+        super.onDestroy();
+    }
+}
