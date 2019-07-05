@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 
 import com.bobo.shoppingmall.R;
 import com.bobo.shoppingmall.home.fragment.HomeFragment;
+import com.bobo.shoppingmall.shoppingcart.fragment.ShoppingCartFragmnet$$ViewBinder;
 import com.bobo.shoppingmall.utils.Constants;
 import com.bobo.shoppingmall.utils.UtilsStyle;
 import com.bobo.shoppingmall.base.BaseFragment;
@@ -126,12 +127,26 @@ public class MainActivity extends FragmentActivity {
         //初始化各个fragment
         initFragment();
 
+        /**
+         * .在进入onCreate函数时，先去判断savedInstanceState是否为null，如果不为null,则表示里面有保存这个
+         * fragment。则不再重新去add这个fragment，而是通过Tag从前保存的数据中直接去读取
+         * http://www.imooc.com/article/80888
+         */
+        if(savedInstanceState != null) {
+            homeFragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag("home");
+            typeFragment = (TypeFragment) getSupportFragmentManager().findFragmentByTag("type");
+            communityFragmnet = (CommunityFragmnet) getSupportFragmentManager().
+                    findFragmentByTag("community");
+            shoppingCartFragmnet = (ShoppingCartFragmnet) getSupportFragmentManager().
+                    findFragmentByTag("shopping");
+            userFragment = (UserFragment) getSupportFragmentManager().findFragmentByTag("user");
+        }
+
         //创建一个发送广播的管理者对象
         mLBM = LocalBroadcastManager.getInstance(this);
 
         //定义接收广播的方法-接收到后切换到购物车fragment
         mLBM.registerReceiver(goingToShoppingCart,new IntentFilter(Constants.GOINGTOTHESHOPPINGCART));
-
     }
 
 
@@ -184,18 +199,34 @@ public class MainActivity extends FragmentActivity {
 
     //初始化各个fragment
     private void initFragment(){
+
         fragments = new ArrayList<>();
-        homeFragment = new HomeFragment();
-        fragments.add(homeFragment);
-        typeFragment = new TypeFragment();
-        fragments.add(typeFragment);
-        communityFragmnet = new CommunityFragmnet();
-        fragments.add(communityFragmnet);
-        shoppingCartFragmnet = new ShoppingCartFragmnet();
-        fragments.add(shoppingCartFragmnet);
+
+        if (homeFragment == null) {
+            homeFragment = new HomeFragment();
+            fragments.add(homeFragment);
+        }
+
+        if (typeFragment == null) {
+            typeFragment = new TypeFragment();
+            fragments.add(typeFragment);
+        }
+        if (communityFragmnet == null) {
+            communityFragmnet = new CommunityFragmnet();
+            fragments.add(communityFragmnet);
+        }
+
+        if (shoppingCartFragmnet == null) {
+            shoppingCartFragmnet = new ShoppingCartFragmnet();
+            fragments.add(shoppingCartFragmnet);
+        }
         //fragments.add(new ShoppingCartFragmnet());
-        userFragment = new UserFragment();
-        fragments.add(userFragment);
+
+        if (userFragment == null){
+            userFragment = new UserFragment();
+            fragments.add(userFragment);
+        }
+
         //默认选择首页
         rbHome.performClick();
         //rgMain.check(R.id.rb_home);
@@ -290,9 +321,40 @@ public class MainActivity extends FragmentActivity {
 
         /*判断该fragment是否已经被添加过  如果没有被添加  则添加*/
         if (!fragment.isAdded()) {
-            getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment).commit();
+           //原来写法 安装好一段时间用户按home键退出app有 fragment 重叠的情况
+          // getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment).commit();
             /*添加到 fragmentList*/
             //fragmentList.add(fragment);
+
+            if (fragment == homeFragment){
+                //比原来多加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,"home")
+                        .commit();
+            }
+
+            if (fragment == typeFragment) {
+                //比原来多加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,"type")
+                        .commit();
+            }
+            if (fragment == communityFragmnet) {
+                //比原来多加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,"community")
+                        .commit();
+            }
+
+            if (fragment == shoppingCartFragmnet) {
+                //比原来多加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,"shopping")
+                        .commit();
+            }
+            //fragments.add(new ShoppingCartFragmnet());
+
+            if (fragment == userFragment){
+                //比原来多加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,"user")
+                        .commit();
+            }
         }
 
 
@@ -317,40 +379,25 @@ public class MainActivity extends FragmentActivity {
 
         switch (item) {
             case 0:
-                if (homeFragment == null) {
-                    homeFragment = (HomeFragment) fragments.get(item);
-                }
                 addFragment(homeFragment);
                 showFragment(homeFragment);
                 break;
 
             case 1:
-                if (typeFragment == null) {
-                    typeFragment = (TypeFragment) fragments.get(item);
-                }
                 addFragment(typeFragment);
                 showFragment(typeFragment);
                 break;
             case 2:
-                if (communityFragmnet == null) {
-                    communityFragmnet = (CommunityFragmnet)fragments.get(item);
-                }
                 addFragment(communityFragmnet);
                 showFragment(communityFragmnet);
                 break;
             case 3:
-                if (shoppingCartFragmnet == null) {
-                    shoppingCartFragmnet = (ShoppingCartFragmnet)fragments.get(item);
-                }
                 //2019-6-23增加去逛逛跳转到首页
                 initFragmentSwithListener();
                 addFragment(shoppingCartFragmnet);
                 showFragment(shoppingCartFragmnet);
                 break;
             case 4:
-                if (userFragment == null) {
-                    userFragment = (UserFragment)fragments.get(item);
-                }
                 addFragment(userFragment);
                 showFragment(userFragment);
                 break;
