@@ -50,6 +50,9 @@ public class TypeFragment extends BaseFragment {
     //标签页面
     public TagFragment tagFragment;
 
+    //用户上次选中的position 默认为0
+    private int onTabSelectPosition = 0;
+
     @Override
     public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                          @Nullable Bundle savedInstanceState) {
@@ -73,6 +76,9 @@ public class TypeFragment extends BaseFragment {
             @Override
             public void onTabSelect(int position) {
                 switchFragment(tempFragment, fragmentList.get(position));
+
+                //解决TypeFragment（本页面）Tab 与fragment 错乱的bug
+                onTabSelectPosition = position;
             }
 
             @Override
@@ -100,7 +106,9 @@ public class TypeFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        switchFragment(tempFragment, fragmentList.get(0));
+       // switchFragment(tempFragment, fragmentList.get(0));
+        //解决TypeFragment（本页面）Tab 与fragment 错乱的bug
+        switchFragment(tempFragment, fragmentList.get(onTabSelectPosition));
     }
 
     public void switchFragment(Fragment fromFragment, BaseFragment nextFragment) {
@@ -129,14 +137,73 @@ public class TypeFragment extends BaseFragment {
 
     private void initFragment() {
         fragmentList = new ArrayList<>();
+
         listFragment = new ListFragment();
         tagFragment = new TagFragment();
 
         fragmentList.add(listFragment);
         fragmentList.add(tagFragment);
 
-        switchFragment(tempFragment, fragmentList.get(0));
+        //解决TypeFragment（本页面）Tab 与fragment 错乱的bug
+        switchFragment(tempFragment, fragmentList.get(onTabSelectPosition));
+       // onNavigationItemSelected(position);
     }
+
+
+    //-------没有用到------https://blog.csdn.net/yuzhiqiang_1993/article/details/75014591---------------------
+    /*添加fragment*/
+    private void addFragment(Fragment fragment) {
+
+        /*判断该fragment是否已经被添加过  如果没有被添加  则添加*/
+        if (!fragment.isAdded()) {
+            //原来写法 安装好一段时间用户按home键退出app有 fragment 重叠的情况
+            // getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment).commit();
+            /*添加到 fragmentList*/
+            //fragmentList.add(fragment);
+            if (fragment == listFragment){
+                //tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,
+                        "list").commit();
+            }
+
+            if (fragment == tagFragment) {
+                //加了tag 用于 安装好一段时间用户按home键退出 再进不必再创建
+                getActivity().getSupportFragmentManager().beginTransaction().add(R.id.frameLayout, fragment,
+                        "tag").commit();
+            }
+        }
+    }
+
+    /*显示fragment*/
+    private void showFragment(Fragment fragment) {
+
+        for (Fragment frag : fragmentList) {
+            if (frag != fragment) {
+                /*先隐藏其他fragment*/
+                getActivity().getSupportFragmentManager().beginTransaction().hide(frag).commit();
+            }
+        }
+        getActivity().getSupportFragmentManager().beginTransaction().show(fragment).commit();
+    }
+
+
+    //根据索引 创建fragment 并 显示
+    public void onNavigationItemSelected(int item) {
+
+        switch (item) {
+            case 0:
+//                addFragment(homeFragment);
+//                showFragment(homeFragment);
+                break;
+
+            case 1:
+//                addFragment(typeFragment);
+//                showFragment(typeFragment);
+                break;
+
+        }
+    }
+    //----------------------------------------------------------------------------------------------
 
     //对不同的安卓手机状态栏透明 字体颜色为黑色/白色处理
     private void statusBarSystemSet(View view) {

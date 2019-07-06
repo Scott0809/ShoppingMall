@@ -74,12 +74,25 @@ public class ListFragment extends BaseFragment {
      */
     private KProgressHUD mKProgressHUD;
 
+    /**网络请求完成的变量-默认为true*/
+    private boolean isSuccess = true;
+
     //接收到切换了页面（fragment）广播的处理 leon增加 用户切换页面后数据刷新仍然 选中原来的数据 ↓
     private BroadcastReceiver WantUpdateData = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //再次请求网络
-            getDataFromNet(urls[0]);
+            //getDataFromNet(urls[0]);
+
+            //Leon增加在重新开始的时候起到一个刷新数据的效果、
+            //判断网络是否请求成功避免网络不好的情况下连续不断的请求
+            if (isSuccess){//如果上次请求成功
+                //当前正在请求变量置为false
+                isSuccess = false;
+                //网络请求拿到最新的数据
+                getDataFromNet(urls[0]);
+            }
+
             //接收到切换页面的广播 和onResume都算 切换了页面
             isSwitchPages = true;
             LELog.showLogWithLineNum(5,"BroadcastReceiver");
@@ -116,7 +129,13 @@ public class ListFragment extends BaseFragment {
         super.onResume();
 
         //Leon增加在重新开始的时候起到一个刷新数据的效果、
-        getDataFromNet(urls[0]);
+        //判断网络是否请求成功避免网络不好的情况下连续不断的请求
+        if (isSuccess){//如果上次请求成功
+            //当前正在请求变量置为false
+            isSuccess = false;
+            //网络请求拿到最新的数据
+            getDataFromNet(urls[0]);
+        }
 
         //接收到切换页面的广播 和onResume都算
         isSwitchPages = true;
@@ -170,12 +189,18 @@ public class ListFragment extends BaseFragment {
             Log.e("TAG", "联网失败" + e.getMessage());
             Toast.makeText(mContext, "请求失败请检查网络", Toast.LENGTH_SHORT).show();
 
+            //当前正请求已经结束（无论成功失败本次发起请求已经结束）变量置为true
+            isSuccess = true;
+
             //loading结束（无论成功失败本次发起请求已经结束）
             mKProgressHUD.dismiss();
         }
 
         @Override
         public void onResponse(String response, int id) {
+
+            //当前正请求已经结束（无论成功失败本次发起请求已经结束）变量置为true
+            isSuccess = true;
 
             //联网请求成功 loading结束（无论成功失败本次发起请求已经结束）
             mKProgressHUD.dismiss();
@@ -216,8 +241,8 @@ public class ListFragment extends BaseFragment {
                     //leon增加用户每一次切换页面增加刷新数据和UI逻辑↓
                     int lastLeftPoaition = CacheUtils.getIntHaveDefaultValue(mContext,LASTLEFTPOAITION,
                             -1);
-                    if (lastLeftPoaition != -1 && isSwitchPages){
 
+                    if (lastLeftPoaition != -1 && isSwitchPages){
                         //View view, int position, long id  用代码点击item像用户的手一样（点击后自己会刷新）
                         lv_left.performItemClick(lv_left.getChildAt(lastLeftPoaition),lastLeftPoaition,
                                 lv_left.getItemIdAtPosition(lastLeftPoaition));

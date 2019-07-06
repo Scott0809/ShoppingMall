@@ -85,6 +85,9 @@ public class MainActivity extends FragmentActivity {
     private HomeFragment homeFragment;
     private UserFragment userFragment;
 
+    /**记录用户上次选中的 RadioButton 避免重复点击 typefragment 重复请求*/
+    private int lastPosition = -1;
+
 
     //接收到切换了页面（fragment）广播的处理 切换到 购物车fragment
     private BroadcastReceiver goingToShoppingCart = new BroadcastReceiver() {
@@ -163,7 +166,7 @@ public class MainActivity extends FragmentActivity {
                 //设置状态栏上的字体为黑色
                 UtilsStyle.statusBarLightMode(this,true);
                 //发送切换了fragment的广播
-                mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
+                //mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
                 break;
             case R.id.rb_community://发现
                 position = 2;
@@ -186,6 +189,13 @@ public class MainActivity extends FragmentActivity {
                 UtilsStyle.statusBarLightMode(this,true);
                 break;
         }
+
+        //避免重复的网络请求- 用户点击类型且没有重复点击
+        if (position == 1 && lastPosition != 1){
+            //发送切换了fragment的广播-通知刷新数据
+            mLBM.sendBroadcast(new Intent(Constants.UPDATE_TYPE_DATA));
+        }
+        lastPosition = position;
 
         //根据位置去取不同的fragment
         //BaseFragment baseFragment = getFragment(position);
